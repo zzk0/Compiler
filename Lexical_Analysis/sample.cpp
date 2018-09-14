@@ -58,3 +58,13 @@ void test_control()
 		i++;
 	} while (i < 20);
 }
+
+void test_output()
+{
+	int b = 2333;
+	int a = b << 1;
+	b = a >> 1;
+	cin >> a;
+	if(a < b)
+		cout << "Test";
+}

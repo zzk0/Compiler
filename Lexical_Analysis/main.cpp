@@ -1,11 +1,16 @@
 #include <iostream>
 #include <fstream>
+#include  <string>
+#include "Scanner.h"
 using namespace std;
+
+
 
 int main()
 {
-
-
+	Scanner scanner("sample.cpp");
+	scanner.StartScan();
+	scanner.OutputResult();
 	system("pause");
 }
 
