@@ -27,12 +27,18 @@
     <ClCompile Include="Scanner.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Lexer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DFA.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Scanner.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Lexer.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

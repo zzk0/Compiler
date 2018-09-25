@@ -59,3 +59,64 @@ bool DFA::IsAccepted(string str, int length)
 		return false;
 	}
 }
+
+
+exDFA::exDFA()
+{
+}
+
+
+exDFA::~exDFA()
+{
+}
+
+
+void exDFA::resetToStart()
+{
+	currentState = startState;
+	lastAcceptState = -1;
+}
+
+
+void exDFA::setStartState(int x)
+{
+	startState = x;
+}
+
+
+void exDFA::addAcceptState(int x)
+{
+	acceptStates.push_back(x);
+}
+
+
+void exDFA::addState(translate state)
+{
+	states.push_back(state);
+}
+
+
+void exDFA::runOneStep(char x, bool &accepted, int &currentStateID)
+{
+	int nextState = states[currentState].table[int(x)];
+	if (nextState == -1) {
+		accepted = false;
+	}
+	else {
+		currentStateID = nextState;
+		currentState = nextState;
+		accepted = false;
+		for (unsigned int i = 0; i < acceptStates.size(); i++) {
+			if (acceptStates[i] == currentState) {
+				accepted = true;
+				lastAcceptState = currentState;
+			}
+		}
+	}
+}
+
+
+int exDFA::getLastAcceptState()
+{
+	return lastAcceptState;
+}
