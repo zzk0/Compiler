@@ -118,12 +118,14 @@
     <ClCompile Include="DFA.cpp" />
     <ClCompile Include="Lexer.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="NFA.cpp" />
     <ClCompile Include="sample.cpp" />
     <ClCompile Include="Scanner.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DFA.h" />
     <ClInclude Include="Lexer.h" />
+    <ClInclude Include="NFA.h" />
     <ClInclude Include="Scanner.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

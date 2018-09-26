@@ -72,6 +72,7 @@ public:
 	bool IsAccepted(string str, int length);
 };
 
+
 class exDFA
 {
 public:
@@ -92,6 +93,9 @@ public:
 
 	void runOneStep(char x, bool &accepted, int &currentStateID);
 
+	void convertFromDFAs(vector<DFA> DFAs);
+
 	// bool IsAccepted(const char *str, int length);
 	// bool IsAccepted(string str, int length);
 };
+ 

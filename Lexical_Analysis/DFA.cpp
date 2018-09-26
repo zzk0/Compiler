@@ -116,6 +116,11 @@ void exDFA::runOneStep(char x, bool &accepted, int &currentStateID)
 }
 
 
+void exDFA::convertFromDFAs(vector<DFA> DFAs)
+{
+}
+
+
 int exDFA::getLastAcceptState()
 {
 	return lastAcceptState;

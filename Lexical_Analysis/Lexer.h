@@ -24,6 +24,7 @@ public:
 	vector<string> patterns;
 	exDFA dfa;
 	string text;
+	int textPos;
 
 	void readText(const char *fileName);
 	void addPattern(string pattern);
