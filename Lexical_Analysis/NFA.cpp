@@ -62,8 +62,13 @@ void NFA::alphabetClosure(char x, int state, vector<int> &reachableStates)
 	for (int i = 0; i < G[state].size(); i++)
 	{
 		if (G[state][i].second == x) {
-			reachableStates.push_back(G[state][i].first);
-			epsilonClosure(G[state][i].first, reachableStates);
+			if (count(reachableStates.begin(), reachableStates.end(), G[state][i].first)) {
+				continue;
+			}
+			else {
+				reachableStates.push_back(G[state][i].first);
+				epsilonClosure(G[state][i].first, reachableStates);
+			}
 		}
 	}
 }
@@ -99,6 +104,7 @@ DFA NFA::convertToDFA()
 {
 	map<int, vector<int>> M;
 	vector<int> reachableStates;
+	reachableStates.push_back(startState);
 	epsilonClosure(startState, reachableStates);
 
 	M[0] = vector<int>();
@@ -114,26 +120,38 @@ DFA NFA::convertToDFA()
 	{
 		for (int i = 1; i < 128; i++)
 		{
-			reachableStates.clear();
-			alphabetClosure(char(i), M[j], reachableStates);
-			for (int k = 0; k < p; k++)
+			vector<int> temp;
+			alphabetClosure(char(i), M[j], temp);
+			bool find = false;
+			if (temp.size() == 0)
 			{
-				if (hasSameVector(reachableStates, M[k]))
+				find = true;
+				dfa.states[0].table[i] = '\0';
+			}
+			else
+			{
+				for (int k = 1; k <= p; k++)
 				{
-					dfa.states[j].table[char(i)] = k;
+					if (hasSameVector(temp, M[k]))
+					{
+						dfa.states[j].table[i] = k;
+						find = true;
+						break;
+					}
 				}
-				else
-				{
-					p = p + 1;
-					dfa.addState(translate());
-					dfa.states[j].table[char(i)] = p;
-				}
+			}
+			if(!find)
+			{
+				p = p + 1;
+				M[p] = temp;
+				dfa.addState(translate());
+				dfa.states[j].table[i] = p;
 			}
 		}
 		j++;
 	}
 
-	return DFA();
+	return dfa;
 }
 
 

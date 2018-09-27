@@ -8,12 +8,6 @@ using namespace std;
 
 int main()
 {
-	DFA dfa;
-	dfa.addState(translate());
-	for (int i = 0; i < 256; i++) {
-		cout << dfa.states[0].table[i];
-	}
-
 	NFA nfa(4);
 	nfa.setStartState(1);
 	nfa.addAcceptState(1);
@@ -23,6 +17,13 @@ int main()
 	nfa.addEdge(2, 3, 'a');
 	nfa.addEdge(2, 3, 'b');
 	nfa.addEdge(3, 1, 'a');
+
+	DFA dfa = nfa.convertToDFA();
+	string x;
+	while (cin >> x)
+	{
+		cout << (dfa.IsAccepted(x, x.length()) ? "accept: " : "reject: ") << x << endl;
+	}
 
 	system("pause");
 }

@@ -39,11 +39,11 @@ cout << str << (x ? " accept" : " reject") << endl;
 using namespace std;
 
 struct translate {
-	int table[256];
+	int table[128];
 
 	translate()
 	{
-		for (int i = 0; i < 256; i++)
+		for (int i = 0; i < 128; i++)
 		{
 			table[i] = -1;
 		}
