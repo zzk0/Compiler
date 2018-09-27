@@ -40,6 +40,14 @@ using namespace std;
 
 struct translate {
 	int table[256];
+
+	translate()
+	{
+		for (int i = 0; i < 256; i++)
+		{
+			table[i] = -1;
+		}
+	}
 };
 
 class DFA
@@ -52,6 +60,7 @@ public:
 	假设输入的char是x，translate[int(x)]得到的是转移过去的状态。如果为-1，表示不存在这样的转移函数。
 	如果需要添加一个新的状态，那么只需要初始化好translate之后，向states push一个translate。
 	*/
+	vector<string> stateIDs;
 	vector<translate> states;
 	int startState;
 	int acceptState;
@@ -64,6 +73,13 @@ public:
 	初始化state：state[int(x)] = 某一个状态的ID
 	*/
 	void addState(translate state);
+	void addState(translate state, string stateID);
+
+	/*
+	通过stateID来查找对应vector<translate>中的位置
+	返回-1表示没有找到。
+	*/
+	int statesPos(string stateID);
 
 	/*
 	输入一个字符串str,长度length，然后返回这个DFA是否接受这个串
@@ -99,3 +115,33 @@ public:
 	// bool IsAccepted(string str, int length);
 };
  
+
+/*
+implement by graph(adjacent linked list)
+*/
+//class gDFA
+//{
+//public:
+//	gDFA();
+//	~gDFA();
+//
+//	vector<translate> states;
+//	int startState;
+//	int acceptState;
+//
+//	void setStartState(int x);
+//	void setAcceptState(int x);
+//
+//	/*
+//	添加一个状态
+//	初始化state：state[int(x)] = 某一个状态的ID
+//	*/
+//	void addState(translate state);
+//	void addState(translate state, string stateID);
+//
+//	/*
+//	输入一个字符串str,长度length，然后返回这个DFA是否接受这个串
+//	*/
+//	bool IsAccepted(const char *str, int length);
+//	bool IsAccepted(string str, int length);
+//};

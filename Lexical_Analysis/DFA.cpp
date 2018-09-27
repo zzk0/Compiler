@@ -11,20 +11,42 @@ DFA::~DFA()
 {
 }
 
+
 void DFA::setStartState(int x)
 {
 	startState = x;
 }
+
 
 void DFA::setAcceptState(int x)
 {
 	acceptState = x;
 }
 
+
 void DFA::addState(translate state)
 {
 	states.push_back(state);
 }
+
+
+void DFA::addState(translate state, string stateID)
+{
+	states.push_back(state);
+	stateIDs.push_back(stateID);
+}
+
+
+int DFA::statesPos(string stateID)
+{
+	for (int i = 0; i < stateIDs.size(); i++) {
+		if (stateIDs[i] == stateID) {
+			return i;
+		}
+	}
+	return -1;
+}
+
 
 bool DFA::IsAccepted(const char *str, int length)
 {
@@ -42,6 +64,7 @@ bool DFA::IsAccepted(const char *str, int length)
 		return false;
 	}
 }
+
 
 bool DFA::IsAccepted(string str, int length)
 {

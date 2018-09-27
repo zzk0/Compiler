@@ -2,14 +2,27 @@
 #include <fstream>
 #include  <string>
 #include "DFA.h"
+#include "NFA.h"
 #include "Lexer.h"
 using namespace std;
 
 int main()
 {
-	Lexer lexer;
-	lexer.readText("sample.cpp");
-	cout << lexer.text << endl;
+	DFA dfa;
+	dfa.addState(translate());
+	for (int i = 0; i < 256; i++) {
+		cout << dfa.states[0].table[i];
+	}
+
+	NFA nfa(4);
+	nfa.setStartState(1);
+	nfa.addAcceptState(1);
+	nfa.addEdge(1, 2, 'b');
+	nfa.addEdge(1, 3, '\0');
+	nfa.addEdge(2, 2, 'a');
+	nfa.addEdge(2, 3, 'a');
+	nfa.addEdge(2, 3, 'b');
+	nfa.addEdge(3, 1, 'a');
 
 	system("pause");
 }
