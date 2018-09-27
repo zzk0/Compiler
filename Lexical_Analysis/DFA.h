@@ -63,7 +63,7 @@ public:
 	vector<string> stateIDs;
 	vector<translate> states;
 	int startState;
-	int acceptState;
+	vector<int> acceptState;
 
 	void setStartState(int x);
 	void setAcceptState(int x);

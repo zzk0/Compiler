@@ -114,6 +114,8 @@ DFA NFA::convertToDFA()
 	dfa.addState(translate()); // state 0
 	dfa.addState(translate()); // state 1
 	dfa.setStartState(1);
+	dfa.setAcceptState(1);
+	
 
 	int j = 0, p = 1;
 	while (j <= p)
@@ -143,6 +145,17 @@ DFA NFA::convertToDFA()
 			if(!find)
 			{
 				p = p + 1;
+				for (int ii = 0; ii < temp.size(); ii++)
+				{
+					for (int jj = 0; jj < acceptStates.size(); jj++)
+					{
+						if (temp[ii] == acceptStates[jj])
+						{
+							dfa.setAcceptState(p);
+							break;
+						}
+					}
+				}
 				M[p] = temp;
 				dfa.addState(translate());
 				dfa.states[j].table[i] = p;

@@ -47,5 +47,8 @@
     <ClInclude Include="NFA.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="NFATests.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

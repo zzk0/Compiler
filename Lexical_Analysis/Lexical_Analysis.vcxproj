@@ -126,6 +126,7 @@
     <ClInclude Include="DFA.h" />
     <ClInclude Include="Lexer.h" />
     <ClInclude Include="NFA.h" />
+    <ClInclude Include="NFATests.h" />
     <ClInclude Include="Scanner.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -20,7 +20,8 @@ void DFA::setStartState(int x)
 
 void DFA::setAcceptState(int x)
 {
-	acceptState = x;
+	//acceptState = x;
+	acceptState.push_back(x);
 }
 
 
@@ -57,12 +58,20 @@ bool DFA::IsAccepted(const char *str, int length)
 			return false;
 		}
 	}
-	if (nextState == acceptState) {
-		return true;
+	for (int i = 0; i < acceptState.size(); i++)
+	{
+		if (nextState == acceptState[i])
+		{
+			return true;
+		}
 	}
-	else {
-		return false;
-	}
+	return false;
+	//if (nextState == acceptState) {
+	//	return true;
+	//}
+	//else {
+	//	return false;
+	//}
 }
 
 
@@ -75,12 +84,14 @@ bool DFA::IsAccepted(string str, int length)
 			return false;
 		}
 	}
-	if (nextState == acceptState) {
-		return true;
+	for (int i = 0; i < acceptState.size(); i++)
+	{
+		if (nextState == acceptState[i])
+		{
+			return true;
+		}
 	}
-	else {
-		return false;
-	}
+	return false;
 }
 
 
