@@ -124,6 +124,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DFA.h" />
+    <ClInclude Include="DFATests.h" />
     <ClInclude Include="Lexer.h" />
     <ClInclude Include="NFA.h" />
     <ClInclude Include="NFATests.h" />

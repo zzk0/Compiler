@@ -41,7 +41,9 @@ public:
 	DFA convertToDFA();
 
 private:
-	int convertToValue(vector<int> &states);
 	bool hasSameVector(vector<int> a, vector<int> b);
 };
 
+NFA nfa_concatenate(NFA a, NFA b);
+NFA nfa_union(NFA a, NFA b);
+NFA nfa_star(NFA a);

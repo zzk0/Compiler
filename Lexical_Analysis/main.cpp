@@ -12,6 +12,9 @@ int main()
 	nfa_test_1();
 	nfa_test_2();
 	nfa_test_3();
+	nfa_test_4();
+	nfa_test_5();
+	nfa_test_6();
 	system("pause");
 }
 

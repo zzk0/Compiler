@@ -18,10 +18,9 @@ void DFA::setStartState(int x)
 }
 
 
-void DFA::setAcceptState(int x)
+void DFA::addAcceptState(int x)
 {
-	//acceptState = x;
-	acceptState.push_back(x);
+	acceptStates.push_back(x);
 }
 
 
@@ -58,20 +57,14 @@ bool DFA::IsAccepted(const char *str, int length)
 			return false;
 		}
 	}
-	for (int i = 0; i < acceptState.size(); i++)
+	for (int i = 0; i < acceptStates.size(); i++)
 	{
-		if (nextState == acceptState[i])
+		if (nextState == acceptStates[i])
 		{
 			return true;
 		}
 	}
 	return false;
-	//if (nextState == acceptState) {
-	//	return true;
-	//}
-	//else {
-	//	return false;
-	//}
 }
 
 
@@ -84,9 +77,9 @@ bool DFA::IsAccepted(string str, int length)
 			return false;
 		}
 	}
-	for (int i = 0; i < acceptState.size(); i++)
+	for (int i = 0; i < acceptStates.size(); i++)
 	{
-		if (nextState == acceptState[i])
+		if (nextState == acceptStates[i])
 		{
 			return true;
 		}
@@ -95,42 +88,7 @@ bool DFA::IsAccepted(string str, int length)
 }
 
 
-exDFA::exDFA()
-{
-}
-
-
-exDFA::~exDFA()
-{
-}
-
-
-void exDFA::resetToStart()
-{
-	currentState = startState;
-	lastAcceptState = -1;
-}
-
-
-void exDFA::setStartState(int x)
-{
-	startState = x;
-}
-
-
-void exDFA::addAcceptState(int x)
-{
-	acceptStates.push_back(x);
-}
-
-
-void exDFA::addState(translate state)
-{
-	states.push_back(state);
-}
-
-
-void exDFA::runOneStep(char x, bool &accepted, int &currentStateID)
+void DFA::runOneStep(char x, bool &accepted, int &currentStateID)
 {
 	int nextState = states[currentState].table[int(x)];
 	if (nextState == -1) {
@@ -150,12 +108,7 @@ void exDFA::runOneStep(char x, bool &accepted, int &currentStateID)
 }
 
 
-void exDFA::convertFromDFAs(vector<DFA> DFAs)
-{
-}
-
-
-int exDFA::getLastAcceptState()
+int DFA::getLastAcceptState()
 {
 	return lastAcceptState;
 }

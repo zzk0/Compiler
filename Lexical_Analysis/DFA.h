@@ -63,10 +63,10 @@ public:
 	vector<string> stateIDs;
 	vector<translate> states;
 	int startState;
-	vector<int> acceptState;
+	vector<int> acceptStates;
 
 	void setStartState(int x);
-	void setAcceptState(int x);
+	void addAcceptState(int x);
 
 	/*
 	添加一个状态
@@ -86,62 +86,43 @@ public:
 	*/
 	bool IsAccepted(const char *str, int length);
 	bool IsAccepted(string str, int length);
-};
 
-
-class exDFA
-{
-public:
-	exDFA();
-	~exDFA();
-
-	vector<translate> states;
-	vector<int> acceptStates;
-	int startState;
-	int lastAcceptState;
-	int currentState;
-
-	void resetToStart();
-	void setStartState(int x);
-	void addAcceptState(int x);
-	void addState(translate state);
+	/*
+	输入一个字符，一次转移
+	需要保存的状态：当前的state，上一次accept的state
+	*/
+	void runOneStep(char x, bool &accepted, int &currentStateID);
 	int getLastAcceptState();
 
-	void runOneStep(char x, bool &accepted, int &currentStateID);
-
-	void convertFromDFAs(vector<DFA> DFAs);
-
-	// bool IsAccepted(const char *str, int length);
-	// bool IsAccepted(string str, int length);
+private:
+	int lastAcceptState;
+	int currentState;
 };
- 
 
-/*
-implement by graph(adjacent linked list)
-*/
-//class gDFA
+
+//class exDFA
 //{
 //public:
-//	gDFA();
-//	~gDFA();
+//	exDFA();
+//	~exDFA();
 //
 //	vector<translate> states;
+//	vector<int> acceptStates;
 //	int startState;
-//	int acceptState;
+//	int lastAcceptState;
+//	int currentState;
 //
+//	void resetToStart();
 //	void setStartState(int x);
-//	void setAcceptState(int x);
-//
-//	/*
-//	添加一个状态
-//	初始化state：state[int(x)] = 某一个状态的ID
-//	*/
+//	void addAcceptState(int x);
 //	void addState(translate state);
-//	void addState(translate state, string stateID);
+//	int getLastAcceptState();
 //
-//	/*
-//	输入一个字符串str,长度length，然后返回这个DFA是否接受这个串
-//	*/
-//	bool IsAccepted(const char *str, int length);
-//	bool IsAccepted(string str, int length);
+//	void runOneStep(char x, bool &accepted, int &currentStateID);
+//
+//	void convertFromDFAs(vector<DFA> DFAs);
+//
+//	// bool IsAccepted(const char *str, int length);
+//	// bool IsAccepted(string str, int length);
 //};
+// 
