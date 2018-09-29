@@ -114,14 +114,14 @@ NFA evaluate(queue<char> Q)
 	stack<NFA> S;
 	while (!Q.empty())
 	{
-		bool lastFlag = false;
 		if (!isSpecialCharacter(Q.front())) {
 			S.push(char_to_NFA(Q.front()));
 		}
 		else {
 			NFA b = S.top(); S.pop();
 			NFA a;
-			if (!S.empty()) { a = S.top(); S.pop(); lastFlag = S.empty();  }
+			bool lastFlag = (S.size() == 1);
+			if (!S.empty()) { a = S.top(); S.pop(); }
 			NFA c;
 			switch (Q.front())
 			{
@@ -130,7 +130,7 @@ NFA evaluate(queue<char> Q)
 				S.push(c);
 				break;
 			case '*':
-				if(S.empty() && lastFlag) S.push(a);
+				if(lastFlag || !S.empty()) S.push(a);
 				c = nfa_star(b);
 				S.push(c);
 				break;

@@ -95,3 +95,31 @@ void re_test4()
 
 	cout << "Regular Expression Test End" << endl;
 }
+
+void re_test5()
+{
+	string x = "ab(ab|(cd)*)x";
+	int index = 0;
+	NFA nfa = re_to_NFA(x);
+
+	DFA dfa = nfa.convertToDFA();
+
+	x = "";
+	if (dfa.IsAccepted(x, x.length())) cout << "Test Failed" << endl;
+	x = "abcdx";
+	if (!dfa.IsAccepted(x, x.length())) cout << "Test Failed" << endl;
+	x = "abcdcdx";
+	if (!dfa.IsAccepted(x, x.length())) cout << "Test Failed" << endl;
+	x = "ababx";
+	if (!dfa.IsAccepted(x, x.length())) cout << "Test Failed" << endl;
+	x = "ababcdx";
+	if (dfa.IsAccepted(x, x.length())) cout << "Test Failed" << endl;
+	x = "abcdcdcdx";
+	if (!dfa.IsAccepted(x, x.length())) cout << "Test Failed" << endl;
+	x = "abx";
+	if (!dfa.IsAccepted(x, x.length())) cout << "Test Failed" << endl;
+	x = "aba";
+	if (dfa.IsAccepted(x, x.length())) cout << "Test Failed" << endl;
+
+	cout << "Regular Expression Test End" << endl;
+}

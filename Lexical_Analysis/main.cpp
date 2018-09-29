@@ -24,6 +24,7 @@ int main()
 	re_test2();
 	re_test3();
 	re_test4();
+	re_test5();
 
 	//string x
 	//int index = 0;
