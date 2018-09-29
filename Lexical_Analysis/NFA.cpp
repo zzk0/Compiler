@@ -262,6 +262,7 @@ NFA nfa_star(NFA a)
 		c.G[i].insert(c.G[i].end(), a.G[i].begin(), a.G[i].end());
 	}
 	c.setStartState(a.stateCount);
+	c.addAcceptState(a.stateCount);
 	c.addEdge(a.stateCount, a.startState, '\0');
 
 	for (int i = 0; i < a.acceptStates.size(); i++)
