@@ -114,7 +114,17 @@ DFA NFA::convertToDFA()
 	dfa.addState(translate()); // state 0
 	dfa.addState(translate()); // state 1
 	dfa.setStartState(1);
-	dfa.addAcceptState(1);
+	bool flag = false;
+	for (int i = 0; i < reachableStates.size(); i++) {
+		for (int j = 0; j < acceptStates.size(); j++) {
+			if (reachableStates[i] == acceptStates[j]) {
+				dfa.addAcceptState(1);
+				flag = true;
+				break;
+			}
+		}
+		if (flag) break;
+	}
 	
 
 	int j = 0, p = 1;

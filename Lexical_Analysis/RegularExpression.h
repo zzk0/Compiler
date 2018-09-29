@@ -3,13 +3,10 @@
 #include "NFA.h"
 #include <iostream>
 #include <string>
+#include <stack>
+#include <queue>
 using namespace std;
 
-enum State
-{
-	Concatenate,
-	Union
-};
 
 NFA char_to_NFA(char x)
 {
@@ -22,85 +19,138 @@ NFA char_to_NFA(char x)
 }
 
 
-bool has_star(string str, int index)
+bool greater_precedence(char a, char b)
 {
-	int count = 1;
-	for (int i = index; i < str.length(); i++)
-	{
-		if (str[i] == '(') count++;
-		if (str[i] == ')') count--;
-		if (count == 0) {
-			return str[i + 1] == '*';
-		}
-	}
+	if (a == '*' && (b =='*' || b == '|' || b =='+')) return true;
+	if (a == '+' && (b == '|' || b == '+')) return true;
+	return false;
 }
 
 
-NFA re_to_NFA(string str, int &index)
+bool isSpecialCharacter(char x)
 {
-	NFA temp1;
-	bool temp1Empty = true;
-	State state = Concatenate;
+	if (x == '|' || x == '*' || x == '(' || x == ')' || x == '+') {
+		return true;
+	}
+	return false;
+}
 
-	for (; index < str.length(); index++)
+
+string preprocess(string str)
+{
+	string temp;
+	for (int i = 0; i < str.length(); i++) {
+		if (str[i] == '(' || str[i] == '|' || str[i + 1] == '|' || str[i + 1] == ')' || str[i + 1] == '*' || (i == str.length() - 1)) {
+			temp += str[i];
+		}
+		else {
+			temp += str[i];
+			temp += '+';
+		}
+		//if (i == str.length() - 1) {
+		//	temp += str[i];
+		//}
+		//else if (!isSpecialCharacter(str[i]) && !isSpecialCharacter(str[i + 1])) {
+		//	temp += str[i];
+		//	temp += '+';
+		//}
+		//else if (!isSpecialCharacter(str[i]) && str[i + 1] == '(') {
+		//	temp += str[i];
+		//	temp += '+';
+		//}
+		//else if ((str[i] == '*' || str[i] == ')') && !isSpecialCharacter(str[i + 1])) {
+		//	temp += str[i];
+		//	temp += '+';
+		//}
+		//else {
+		//	temp += str[i];
+		//}
+	}
+	return temp;
+}
+
+
+queue<char> infix_to_postfix(string str)
+{
+	queue<char> Q;
+	stack<char> S;
+	for (int i = 0; i < str.length(); i++)
 	{
-		switch (str[index])
-		{
-		case '*':
-			temp1 = nfa_star(temp1);
-			break;
-		
-		case '(':
-			if (state == Concatenate)
-			{
-				index = index + 1;
-				if (temp1Empty) {
-					temp1Empty = false;
-					temp1 = re_to_NFA(str, index);
-				}
-				else {
-					if (has_star(str, index)) {
-						temp1 = nfa_concatenate(temp1, nfa_star(re_to_NFA(str, index)));
-					}
-					else {
-						temp1 = nfa_concatenate(temp1, re_to_NFA(str, index));
-					}
-				}
+		if (str[i] == '(') {
+			S.push(str[i]);
+		}
+		else if (str[i] == ')') {
+			while (S.top() != '(') {
+				char temp = S.top();
+				S.pop();
+				Q.push(temp);
+			};
+			S.pop();
+		}
+		else if(str[i] == '|' || str[i] == '*' || str[i] == '+') {
+			while (!S.empty() && greater_precedence(S.top(), str[i])) {
+				char temp = S.top();
+				S.pop();
+				Q.push(temp);
 			}
-			else if (state == Union)
-			{
-				index = index + 1;
-				temp1 = nfa_union(temp1, re_to_NFA(str, index));
-			}
-			break;
-		
-		case ')':
-			return temp1;
-			break;
-		
-		case '|':
-			state = Union;
-			break;
-
-		default:
-			if (temp1Empty) 
-			{
-				temp1Empty = false;
-				temp1 = char_to_NFA(str[index]);
-			}
-			else 
-			{
-				if (state == Concatenate) {
-					temp1 = nfa_concatenate(temp1, char_to_NFA(str[index]));
-				}
-				else if(state == Union) {
-					temp1 = nfa_union(temp1, re_to_NFA(str, index));
-					state = Concatenate;
-				}
-			}
-			break;
+			S.push(str[i]);
+		}
+		else {
+			Q.push(str[i]);
 		}
 	}
-	
-	return temp1;
+	while (!S.empty()) {
+		char temp = S.top();
+		S.pop();
+		Q.push(temp);
+	}
+
+	return Q;
+}
+
+
+NFA evaluate(queue<char> Q)
+{
+	stack<NFA> S;
+	while (!Q.empty())
+	{
+		bool lastFlag = false;
+		if (!isSpecialCharacter(Q.front())) {
+			S.push(char_to_NFA(Q.front()));
+		}
+		else {
+			NFA b = S.top(); S.pop();
+			NFA a;
+			if (!S.empty()) { a = S.top(); S.pop(); lastFlag = S.empty();  }
+			NFA c;
+			switch (Q.front())
+			{
+			case '+':
+				c = nfa_concatenate(a, b);
+				S.push(c);
+				break;
+			case '*':
+				if(S.empty() && lastFlag) S.push(a);
+				c = nfa_star(b);
+				S.push(c);
+				break;
+			case '|':
+				c = nfa_union(a, b);
+				S.push(c);
+				break;
+			default:
+				break;
+			}
+		}
+		Q.pop();
+	}
+	return S.top();
+}
+
+
+NFA re_to_NFA(string str)
+{
+	str = preprocess(str);
+	queue<char> Q = infix_to_postfix(str);
+	return evaluate(Q);
 }

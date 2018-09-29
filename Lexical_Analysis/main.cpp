@@ -6,10 +6,13 @@
 #include "Lexer.h"
 #include "NFATests.h"
 #include "RETests.h"
+#include "DFATests.h"
 using namespace std;
 
 int main()
 {
+	dfa_test_2();
+
 	nfa_test_1();
 	nfa_test_2();
 	nfa_test_3();
@@ -22,16 +25,16 @@ int main()
 	re_test3();
 	re_test4();
 
-	string x = "(x*|xy)";
-	int index = 0;
-	NFA nfa = re_to_NFA(x, index);
+	//string x
+	//int index = 0;
+	//NFA nfa = re_to_NFA(x);
 
-	DFA dfa = nfa.convertToDFA();
-	x;
-	while (cin >> x)
-	{
-		cout << (dfa.IsAccepted(x, x.length()) ? "Accept" : "Reject") << endl;
-	}
+	//DFA dfa = nfa.convertToDFA();
+	//x;
+	//while (cin >> x)
+	//{
+	//	cout << (dfa.IsAccepted(x, x.length()) ? "Accept" : "Reject") << endl;
+	//}
 
 	system("pause");
 }
@@ -41,4 +44,19 @@ stupid scanner
 //Scanner scanner("sample.cpp");
 //scanner.StartScan();
 //scanner.OutputResult();
+*/
+
+/*
+preprocess
+string x = "(x*|xy)";
+string y = preprocess(x);
+cout << y << endl;
+
+x = "x(y)*";
+y = preprocess(x);
+cout << y << endl;
+
+x = "((xy)*|xyz*)";
+y = preprocess(x);
+cout << y << endl;
 */
