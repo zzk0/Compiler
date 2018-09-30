@@ -25,17 +25,7 @@ int main()
 	re_test3();
 	re_test4();
 	re_test5();
-
-	//string x
-	//int index = 0;
-	//NFA nfa = re_to_NFA(x);
-
-	//DFA dfa = nfa.convertToDFA();
-	//x;
-	//while (cin >> x)
-	//{
-	//	cout << (dfa.IsAccepted(x, x.length()) ? "Accept" : "Reject") << endl;
-	//}
+	re_test6();
 
 	system("pause");
 }

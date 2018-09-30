@@ -2,6 +2,7 @@
 
 #include "RegularExpression.h"
 
+
 void re_test1()
 {
 	string x = "a*b";
@@ -23,6 +24,7 @@ void re_test1()
 
 	cout << "Regular Expression Test End" << endl;
 }
+
 
 void re_test2()
 {
@@ -46,6 +48,7 @@ void re_test2()
 	cout << "Regular Expression Test End" << endl;
 }
 
+
 void re_test3()
 {
 	string x = "ab(ab|cd)*";
@@ -67,6 +70,7 @@ void re_test3()
 
 	cout << "Regular Expression Test End" << endl;
 }
+
 
 void re_test4()
 {
@@ -96,18 +100,18 @@ void re_test4()
 	cout << "Regular Expression Test End" << endl;
 }
 
+
 void re_test5()
 {
 	string x = "ab(ab|(cd)*)x";
-	int index = 0;
 	NFA nfa = re_to_NFA(x);
 
 	DFA dfa = nfa.convertToDFA();
 
-	x = "";
+	x = " ";
 	if (dfa.IsAccepted(x, x.length())) cout << "Test Failed" << endl;
-	x = "abcdx";
-	if (!dfa.IsAccepted(x, x.length())) cout << "Test Failed" << endl;
+	x = "abcdx ";
+	if (dfa.IsAccepted(x, x.length())) cout << "Test Failed" << endl;
 	x = "abcdcdx";
 	if (!dfa.IsAccepted(x, x.length())) cout << "Test Failed" << endl;
 	x = "ababx";
@@ -122,4 +126,26 @@ void re_test5()
 	if (dfa.IsAccepted(x, x.length())) cout << "Test Failed" << endl;
 
 	cout << "Regular Expression Test End" << endl;
+}
+
+
+void re_test6()
+{
+	string str = "(a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z|_)(a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z|_|0|1|2|3|4|5|6|7|8|9)*";
+	
+	NFA nfa = re_to_NFA(str);
+	DFA dfa = nfa.convertToDFA();
+
+ 	str = "asdf1";
+	if (!dfa.IsAccepted(str, str.length())) cout << "Test Failed" << endl;
+	str = "a";
+	if (!dfa.IsAccepted(str, str.length())) cout << "Test Failed" << endl;
+	str = "a1";
+	if (!dfa.IsAccepted(str, str.length())) cout << "Test Failed" << endl;
+	str = "_a";
+	if (!dfa.IsAccepted(str, str.length())) cout << "Test Failed" << endl;
+	str = "_a1";
+	if (!dfa.IsAccepted(str, str.length())) cout << "Test Failed" << endl;
+	str = "1_a1";
+	if (dfa.IsAccepted(str, str.length())) cout << "Test Failed" << endl;
 }

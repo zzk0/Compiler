@@ -36,10 +36,49 @@ bool isSpecialCharacter(char x)
 }
 
 
+// Not complete yet
+//string preprocess_to_basic(string str)
+//{
+//	string temp;
+//	for (int i = 0; i < str.length(); i++)
+//	{
+//		bool alter = false;
+//		char tempc1;
+//		char tempc2;
+//		if (str[i] == '+') {
+//			temp += str[i - 1];
+//			temp += '*';
+//		}
+//		else if (str[i] == '[') {
+//			alter = true;
+//		}
+//		else if (str[i] == ']') {
+//			alter = false;
+//		}
+//		else if (str[i] == '-' && alter) {
+//			for (char tempx = tempc1; tempc1 < tempc2; tempc1++) {
+//				temp += tempx;
+//				temp += '|';
+//			}
+//			temp += tempc2;
+//		}
+//		else if(alter) {
+//			temp += str[i];
+//			temp += '|';
+//		}
+//		else {
+//			temp += str[i];
+//		}
+// 	}
+//	return temp;
+//}
+
+
 string preprocess(string str)
 {
 	string temp;
-	for (int i = 0; i < str.length(); i++) {
+	for (int i = 0; i < str.length(); i++)
+	{
 		if (str[i] == '(' || str[i] == '|' || str[i + 1] == '|' || str[i + 1] == ')' || str[i + 1] == '*' || (i == str.length() - 1)) {
 			temp += str[i];
 		}
@@ -47,24 +86,6 @@ string preprocess(string str)
 			temp += str[i];
 			temp += '+';
 		}
-		//if (i == str.length() - 1) {
-		//	temp += str[i];
-		//}
-		//else if (!isSpecialCharacter(str[i]) && !isSpecialCharacter(str[i + 1])) {
-		//	temp += str[i];
-		//	temp += '+';
-		//}
-		//else if (!isSpecialCharacter(str[i]) && str[i + 1] == '(') {
-		//	temp += str[i];
-		//	temp += '+';
-		//}
-		//else if ((str[i] == '*' || str[i] == ')') && !isSpecialCharacter(str[i + 1])) {
-		//	temp += str[i];
-		//	temp += '+';
-		//}
-		//else {
-		//	temp += str[i];
-		//}
 	}
 	return temp;
 }
