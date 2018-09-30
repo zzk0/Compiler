@@ -34,7 +34,9 @@ void Lexer::addPattern(string pattern)
 
 void Lexer::convertToDFA()
 {
-
+	for (int i = 0; i < patterns.size(); i++) {
+		//DFAs.push_back(re_to_NFA(patterns[i]).convertToDFA);
+	}
 }
 
 

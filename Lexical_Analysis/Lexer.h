@@ -22,7 +22,7 @@ public:
 	~Lexer();
 
 	vector<string> patterns;
-	DFA dfa;
+	vector<DFA> DFAs;
 	string text;
 	int textPos;
 

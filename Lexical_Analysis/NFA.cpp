@@ -221,6 +221,19 @@ NFA nfa_concatenate(NFA a, NFA b)
 
 NFA nfa_union(NFA a, NFA b)
 {
+	if (a.stateCount == 2 && b.stateCount == 2 && a.acceptStates[0] == 1 && b.acceptStates[0] == 1) {
+		NFA c(2);
+		c.setStartState(0);
+		c.addAcceptState(1);
+		for (int i = 0; i < a.G[0].size(); i++) {
+			c.addEdge(0, 1, a.G[0][i].second);
+		}
+		for (int i = 0; i < b.G[0].size(); i++) {
+			c.addEdge(0, 1, b.G[0][i].second);
+		}
+		return c;
+	}
+
 	// 首先，将b的所有状态的ID加上a的偏移量。
 	int bias = a.stateCount;
 	for (int i = 0; i < b.stateCount; i++)

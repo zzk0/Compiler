@@ -129,6 +129,9 @@ void re_test5()
 }
 
 
+/*
+我这里的实现最大的问题在于并联产生了很多的状态。这些其实可以化简成一个状态机的。
+*/
 void re_test6()
 {
 	string str = "(a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z|_)(a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z|_|0|1|2|3|4|5|6|7|8|9)*";

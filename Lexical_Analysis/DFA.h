@@ -98,31 +98,3 @@ private:
 	int lastAcceptState;
 	int currentState;
 };
-
-
-//class exDFA
-//{
-//public:
-//	exDFA();
-//	~exDFA();
-//
-//	vector<translate> states;
-//	vector<int> acceptStates;
-//	int startState;
-//	int lastAcceptState;
-//	int currentState;
-//
-//	void resetToStart();
-//	void setStartState(int x);
-//	void addAcceptState(int x);
-//	void addState(translate state);
-//	int getLastAcceptState();
-//
-//	void runOneStep(char x, bool &accepted, int &currentStateID);
-//
-//	void convertFromDFAs(vector<DFA> DFAs);
-//
-//	// bool IsAccepted(const char *str, int length);
-//	// bool IsAccepted(string str, int length);
-//};
-// 
