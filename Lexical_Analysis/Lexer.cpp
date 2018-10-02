@@ -82,7 +82,7 @@ vector<pair<string, string>> Lexer::scan()
 			lastAcceptIndex = indexExplorer;
 			indexExplorer++;
 			if (indexExplorer == text.length()) {
-				string input = text.substr(startIndex, lastAcceptIndex - startIndex);
+				string input = text.substr(startIndex, lastAcceptIndex - startIndex + 1);
 				string stateID = dfa.stateIDs[dfa.getLastAcceptState()];
 				result.push_back(pair<string, string>(input, stateID));
 				break;

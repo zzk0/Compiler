@@ -3,6 +3,8 @@ This file is used to test the lexical analysis program
 Skip Comment
 */
 
+// Comment
+
 #include <iostream>
 #include <stdio.h>
 #include <string>

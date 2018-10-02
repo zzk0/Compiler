@@ -79,7 +79,7 @@ inline string preprocess(string str)
 	string temp;
 	for (int i = 0; i < str.length(); i++)
 	{
-		if (str[i] == '(' || str[i] == '|' || str[i + 1] == '|' || str[i + 1] == ')' || str[i + 1] == '*' || (i == str.length() - 1)) {
+		if (str[i] == '(' || str[i] == '|' || str[i + 1] == '|' || str[i + 1] == ')' || str[i + 1] == '*' || str[i] == '\\' || (i == str.length() - 1)) {
 			temp += str[i];
 		}
 		else {
@@ -108,13 +108,23 @@ inline queue<char> infix_to_postfix(string str)
 			};
 			S.pop();
 		}
-		else if(str[i] == '|' || str[i] == '*' || str[i] == '+') {
+		else if (str[i] == '|' || str[i] == '*' || str[i] == '+') {
 			while (!S.empty() && greater_precedence(S.top(), str[i])) {
 				char temp = S.top();
 				S.pop();
 				Q.push(temp);
 			}
 			S.push(str[i]);
+		}
+		else if (str[i] == '\\') {
+			Q.push('\\');
+			if (str[i + 1] == 'n') {
+				Q.push('\n');
+			}
+			else {
+				Q.push(str[i + 1]);
+			}
+			i++;
 		}
 		else {
 			Q.push(str[i]);
@@ -135,7 +145,11 @@ inline NFA evaluate(queue<char> Q)
 	stack<NFA> S;
 	while (!Q.empty())
 	{
-		if (!isSpecialCharacter(Q.front())) {
+		if (Q.front() == '\\') {
+			Q.pop();
+			S.push(char_to_NFA(Q.front()));
+		}
+		else if (!isSpecialCharacter(Q.front())) {
 			S.push(char_to_NFA(Q.front()));
 		}
 		else {

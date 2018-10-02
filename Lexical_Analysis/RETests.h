@@ -152,3 +152,34 @@ void re_test6()
 	str = "1_a1";
 	if (dfa.IsAccepted(str, str.length())) cout << "Test Failed" << endl;
 }
+
+
+/*
+×ªÒå×Ö·û²âÊÔ
+*/
+void re_test7()
+{
+	string str = R"(/\*(a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z|_|0|1|2|3|4|5|6|7|8|9)*\*/)";
+
+	NFA nfa = re_to_NFA(str);
+	DFA dfa = nfa.convertToDFA();
+
+	str = "/";
+	if (dfa.IsAccepted(str, str.length())) cout << "Test Failed" << endl;
+	str = "/*commnt*/";
+	if (!dfa.IsAccepted(str, str.length())) cout << "Test Failed" << endl;
+	str = "/**";
+	if (dfa.IsAccepted(str, str.length())) cout << "Test Failed" << endl;
+}
+
+
+void re_test8()
+{
+	string str = R"(\()";
+
+	NFA nfa = re_to_NFA(str);
+	DFA dfa = nfa.convertToDFA();
+
+	str = "(";
+	if (!dfa.IsAccepted(str, str.length())) cout << "Test Failed" << endl;
+}

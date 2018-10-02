@@ -28,8 +28,12 @@ int main()
 	re_test4();
 	re_test5();
 	re_test6();
+	re_test7();
+	re_test8();
 
-	lexer_test1();
+
+	// lexer_test1();
+	lexer_test2();
 
 	system("pause");
 }
