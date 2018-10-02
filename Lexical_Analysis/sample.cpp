@@ -64,6 +64,7 @@ void test_control()
 void test_output()
 {
 	int b = 2333;
+	double d = 2.333;
 	int a = b << 1;
 	b = a >> 1;
 	cin >> a;
