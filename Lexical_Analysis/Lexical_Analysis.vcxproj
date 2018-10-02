@@ -126,6 +126,7 @@
     <ClInclude Include="DFA.h" />
     <ClInclude Include="DFATests.h" />
     <ClInclude Include="Lexer.h" />
+    <ClInclude Include="LexerTests.h" />
     <ClInclude Include="NFA.h" />
     <ClInclude Include="NFATests.h" />
     <ClInclude Include="RegularExpression.h" />

@@ -59,5 +59,8 @@
     <ClInclude Include="RETests.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="LexerTests.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

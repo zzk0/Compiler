@@ -9,6 +9,7 @@
 
 #pragma once
 #include "DFA.h"
+#include "RegularExpression.h"
 #include <iostream>
 #include <string>
 #include <vector>
@@ -22,13 +23,14 @@ public:
 	~Lexer();
 
 	vector<string> patterns;
-	vector<DFA> DFAs;
+	vector<NFA> NFAs;
+	DFA dfa;
 	string text;
-	int textPos;
 
 	void readText(const char *fileName);
 	void addPattern(string pattern);
 	void convertToDFA();
+	void inputSample(string x, string y);
 	vector<pair<string, string>> scan();
 };
 

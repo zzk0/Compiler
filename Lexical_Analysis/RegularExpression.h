@@ -8,7 +8,7 @@
 using namespace std;
 
 
-NFA char_to_NFA(char x)
+inline NFA char_to_NFA(char x)
 {
 	NFA nfa(2);
 	nfa.setStartState(0);
@@ -19,7 +19,7 @@ NFA char_to_NFA(char x)
 }
 
 
-bool greater_precedence(char a, char b)
+inline bool greater_precedence(char a, char b)
 {
 	if (a == '*' && (b =='*' || b == '|' || b =='+')) return true;
 	if (a == '+' && (b == '|' || b == '+')) return true;
@@ -27,7 +27,7 @@ bool greater_precedence(char a, char b)
 }
 
 
-bool isSpecialCharacter(char x)
+inline bool isSpecialCharacter(char x)
 {
 	if (x == '|' || x == '*' || x == '(' || x == ')' || x == '+') {
 		return true;
@@ -74,7 +74,7 @@ bool isSpecialCharacter(char x)
 //}
 
 
-string preprocess(string str)
+inline string preprocess(string str)
 {
 	string temp;
 	for (int i = 0; i < str.length(); i++)
@@ -91,7 +91,7 @@ string preprocess(string str)
 }
 
 
-queue<char> infix_to_postfix(string str)
+inline queue<char> infix_to_postfix(string str)
 {
 	queue<char> Q;
 	stack<char> S;
@@ -130,7 +130,7 @@ queue<char> infix_to_postfix(string str)
 }
 
 
-NFA evaluate(queue<char> Q)
+inline NFA evaluate(queue<char> Q)
 {
 	stack<NFA> S;
 	while (!Q.empty())
@@ -169,7 +169,7 @@ NFA evaluate(queue<char> Q)
 }
 
 
-NFA re_to_NFA(string str)
+inline NFA re_to_NFA(string str)
 {
 	str = preprocess(str);
 	queue<char> Q = infix_to_postfix(str);

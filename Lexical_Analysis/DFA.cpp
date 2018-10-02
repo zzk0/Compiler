@@ -33,7 +33,13 @@ void DFA::addState(translate state)
 void DFA::addState(translate state, string stateID)
 {
 	states.push_back(state);
-	stateIDs.push_back(stateID);
+	stateIDs[states.size() - 1] = stateID;
+	//stateIDs.push_back(stateID);
+}
+
+void DFA::addStateID(int x, string y)
+{
+	stateIDs[x] = y;
 }
 
 
@@ -91,11 +97,11 @@ bool DFA::IsAccepted(string str, int length)
 void DFA::runOneStep(char x, bool &accepted, int &currentStateID)
 {
 	int nextState = states[currentState].table[int(x)];
+	currentStateID = nextState;
 	if (nextState == -1) {
 		accepted = false;
 	}
 	else {
-		currentStateID = nextState;
 		currentState = nextState;
 		accepted = false;
 		for (unsigned int i = 0; i < acceptStates.size(); i++) {
@@ -105,6 +111,12 @@ void DFA::runOneStep(char x, bool &accepted, int &currentStateID)
 			}
 		}
 	}
+}
+
+
+void DFA::reset()
+{
+	currentState = startState;
 }
 
 

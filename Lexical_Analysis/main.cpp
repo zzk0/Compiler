@@ -4,9 +4,11 @@
 #include "DFA.h"
 #include "NFA.h"
 #include "Lexer.h"
+#include "DFATests.h"
 #include "NFATests.h"
 #include "RETests.h"
-#include "DFATests.h"
+#include "Lexer.h"
+#include "LexerTests.h"
 using namespace std;
 
 int main()
@@ -26,6 +28,8 @@ int main()
 	re_test4();
 	re_test5();
 	re_test6();
+
+	lexer_test1();
 
 	system("pause");
 }

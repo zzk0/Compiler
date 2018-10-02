@@ -180,6 +180,46 @@ DFA NFA::convertToDFA()
 
 NFA nfa_concatenate(NFA a, NFA b)
 {
+	//if (b.stateCount == 2 && b.acceptStates[0] == 1)
+	//{
+	//	NFA c(a.stateCount + 1);
+	//	c.setStartState(a.startState);
+	//	c.addAcceptState(a.stateCount);
+	//	for (int i = 0; i < a.stateCount; i++) {
+	//		c.G[i].insert(c.G[i].end(), a.G[i].begin(), a.G[i].end());
+	//	}
+	//	for (int i = 0; i < a.acceptStates.size(); i++) {
+	//		for (int j = 0; j < b.G[0].size(); j++) {
+	//			c.addEdge(a.acceptStates[i], a.stateCount, b.G[0][j].second);
+	//		}
+	//	}
+	//	return c;
+	//}
+
+	//NFA temp = a;
+	//a = b;
+	//b = temp;
+
+	//if (b.stateCount == 2 && b.acceptStates[0] == 1)
+	//{
+	//	NFA c(a.stateCount + 1);
+	//	c.setStartState(a.startState);
+	//	c.addAcceptState(a.stateCount);
+	//	for (int i = 0; i < a.stateCount; i++) {
+	//		c.G[i].insert(c.G[i].end(), a.G[i].begin(), a.G[i].end());
+	//	}
+	//	for (int i = 0; i < a.acceptStates.size(); i++) {
+	//		for (int j = 0; j < b.G[0].size(); j++) {
+	//			c.addEdge(a.acceptStates[i], a.stateCount, b.G[0][j].second);
+	//		}
+	//	}
+	//	return c;
+	//}
+
+	//temp = a;
+	//a = b;
+	//b = temp;
+
 	// 首先，将b的所有状态的ID加上a的偏移量。
 	int bias = a.stateCount;
 	for (int i = 0; i < b.stateCount; i++)

@@ -36,6 +36,7 @@ cout << str << (x ? " accept" : " reject") << endl;
 #include <iostream>
 #include <string>
 #include <vector>
+#include <map>
 using namespace std;
 
 struct translate {
@@ -60,7 +61,7 @@ public:
 	假设输入的char是x，translate[int(x)]得到的是转移过去的状态。如果为-1，表示不存在这样的转移函数。
 	如果需要添加一个新的状态，那么只需要初始化好translate之后，向states push一个translate。
 	*/
-	vector<string> stateIDs;
+	map<int, string> stateIDs;
 	vector<translate> states;
 	int startState;
 	vector<int> acceptStates;
@@ -74,6 +75,7 @@ public:
 	*/
 	void addState(translate state);
 	void addState(translate state, string stateID);
+	void addStateID(int x, string y);
 
 	/*
 	通过stateID来查找对应vector<translate>中的位置
@@ -92,6 +94,7 @@ public:
 	需要保存的状态：当前的state，上一次accept的state
 	*/
 	void runOneStep(char x, bool &accepted, int &currentStateID);
+	void reset();
 	int getLastAcceptState();
 
 private:
