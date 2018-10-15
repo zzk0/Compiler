@@ -41,7 +41,7 @@ public:
 	DFA convertToDFA();
 
 private:
-	bool hasSameVector(vector<int> a, vector<int> b);
+	bool hasSameVector(vector<int> &a, vector<int> &b);
 };
 
 NFA nfa_concatenate(NFA a, NFA b);

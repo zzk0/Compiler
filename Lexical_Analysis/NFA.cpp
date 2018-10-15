@@ -83,7 +83,7 @@ void NFA::alphabetClosure(char x, vector<int> states, vector<int> &reachableStat
 }
 
 
-bool NFA::hasSameVector(vector<int> a, vector<int> b)
+bool NFA::hasSameVector(vector<int> &a, vector<int> &b)
 {
 	sort(a.begin(), a.end());
 	sort(b.begin(), b.end());
@@ -130,9 +130,10 @@ DFA NFA::convertToDFA()
 	int j = 0, p = 1;
 	while (j <= p)
 	{
+		vector<int> temp;
 		for (int i = 1; i < 128; i++)
 		{
-			vector<int> temp;
+			temp.clear();
 			alphabetClosure(char(i), M[j], temp);
 			bool find = false;
 			if (temp.size() == 0)
@@ -144,7 +145,8 @@ DFA NFA::convertToDFA()
 			{
 				for (int k = 1; k <= p; k++)
 				{
-					if (hasSameVector(temp, M[k]))
+					if (temp.size() != M[k].size()) continue;
+					else if (hasSameVector(temp, M[k]))
 					{
 						dfa.states[j].table[i] = k;
 						find = true;

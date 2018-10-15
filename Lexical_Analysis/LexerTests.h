@@ -104,7 +104,7 @@ void lexer_test2()
 
 	lexer.convertToDFA();
 
-	lexer.readText("sample.cpp");
+	lexer.readText("a.cpp");
 
 	lexer.inputSample("/*comment*/", "COMMENT");
 	lexer.inputSample("// comment", "COMMENT");

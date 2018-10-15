@@ -13,11 +13,6 @@ using namespace std;
 
 int main()
 {
-	for (char x = 'A'; x <= 'Z'; x++)
-	{
-		cout << x << "|";
-	}
-
 	dfa_test_2();
 
 	nfa_test_1();
@@ -40,7 +35,7 @@ int main()
 	// lexer_test1();
 	lexer_test2();
 
-	system("pause");
+	//system("pause");
 }
 
 /*
