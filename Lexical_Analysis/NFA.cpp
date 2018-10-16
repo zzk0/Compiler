@@ -102,13 +102,16 @@ bool NFA::hasSameVector(vector<int> &a, vector<int> &b)
 
 DFA NFA::convertToDFA()
 {
-	map<int, vector<int>> M;
+	//map<int, vector<int>> M;
+	vector<vector<int>> M;
 	vector<int> reachableStates;
 	reachableStates.push_back(startState);
 	epsilonClosure(startState, reachableStates);
 
-	M[0] = vector<int>();
-	M[1] = reachableStates;
+	M.push_back(vector<int>());
+	M.push_back(reachableStates);
+	//M[0] = vector<int>();
+	//M[1] = reachableStates;
 
 	DFA dfa;
 	dfa.addState(translate()); // state 0
@@ -126,7 +129,6 @@ DFA NFA::convertToDFA()
 		if (flag) break;
 	}
 	
-
 	int j = 0, p = 1;
 	while (j <= p)
 	{
@@ -168,7 +170,7 @@ DFA NFA::convertToDFA()
 						}
 					}
 				}
-				M[p] = temp;
+				M.push_back(temp);
 				dfa.addState(translate());
 				dfa.states[j].table[i] = p;
 			}
