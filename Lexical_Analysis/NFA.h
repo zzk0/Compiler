@@ -40,6 +40,8 @@ public:
 
 	DFA convertToDFA();
 
+	void printTable();
+
 private:
 	bool hasSameVector(vector<int> &a, vector<int> &b);
 };

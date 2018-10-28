@@ -340,3 +340,9 @@ NFA nfa_star(NFA a)
 	
 	return c;
 }
+
+
+void NFA::printTable()
+{
+
+}

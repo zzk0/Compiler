@@ -26,13 +26,17 @@ void DFA::addAcceptState(int x)
 
 void DFA::addState(translate state)
 {
-	states.push_back(state);
+	//states.push_back(state);
+	states[index] = state;
+	index++;
 }
 
 
 void DFA::addState(translate state, string stateID)
 {
-	states.push_back(state);
+	//states.push_back(state);
+	states[index] = state;
+	index++;
 	stateIDs[states.size() - 1] = stateID;
 	//stateIDs.push_back(stateID);
 }
@@ -123,4 +127,55 @@ void DFA::reset()
 int DFA::getLastAcceptState()
 {
 	return lastAcceptState;
+}
+
+
+void DFA::removeUnreachableStates()
+{
+	set<int> reachableStates = { startState };
+	set<int> newStates = { startState };
+	set <int> difference;
+
+	do
+	{
+		set<int> temp;
+		for (int x : newStates) 
+		{
+			for (int y = 0; y < 128; y++)
+			{
+				int nextState = states[x].table[y];
+				if (nextState != -1) {
+					temp.insert(nextState);
+				}
+			}
+		}
+		newStates.clear();
+		set_difference(temp.begin(), temp.end(), reachableStates.begin(), reachableStates.end(), inserter(newStates, newStates.begin()));
+		set_union(temp.begin(), temp.end(), reachableStates.begin(), reachableStates.end(), inserter(reachableStates, reachableStates.begin()));
+
+	} while (newStates.size() != 0);
+
+	set<int> allStates;
+	for(int i=0; i<states.size(); i++) {
+		allStates.insert(i);
+	}
+
+	set<int> unreachableStates;
+	set_difference(allStates.begin(), allStates.end(), reachableStates.begin(), reachableStates.end(), inserter(unreachableStates, unreachableStates.begin()));
+
+	for (auto x : unreachableStates)
+	{
+		states.erase(x);
+	}
+}
+
+
+void DFA::mergeNondistinguishableStates()
+{
+}
+
+void DFA::minized()
+{
+	removeUnreachableStates();
+	mergeNondistinguishableStates();
 }

@@ -37,6 +37,9 @@ cout << str << (x ? " accept" : " reject") << endl;
 #include <string>
 #include <vector>
 #include <map>
+#include <set>
+#include <algorithm>
+#include <iterator>
 using namespace std;
 
 struct translate {
@@ -62,7 +65,10 @@ public:
 	如果需要添加一个新的状态，那么只需要初始化好translate之后，向states push一个translate。
 	*/
 	map<int, string> stateIDs;
-	vector<translate> states;
+	//vector<translate> states;
+	map<int, translate> states;
+	int index = 0;
+
 	int startState;
 	vector<int> acceptStates;
 
@@ -96,6 +102,12 @@ public:
 	void runOneStep(char x, bool &accepted, int &currentStateID);
 	void reset();
 	int getLastAcceptState();
+
+	void removeUnreachableStates();
+
+	void mergeNondistinguishableStates();
+
+	void minized();
 
 private:
 	int lastAcceptState;

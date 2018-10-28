@@ -50,11 +50,11 @@ void lexer_test2()
 	// number
 	lexer.addPattern("(0|1|2|3|4|5|6|7|8|9)*.*(0|1|2|3|4|5|6|7|8|9)*");
 	// keyword
-	for (int i = 0; i < 63; i++)
-	{
-		lexer.addPattern(keywords[i]);
-	}
-	//// parentheses
+	//for (int i = 0; i < 63; i++)
+	//{
+	//	lexer.addPattern(keywords[i]);
+	//}
+	// parentheses
 	lexer.addPattern(R"(\()");
 	lexer.addPattern(R"(\))");
 	lexer.addPattern("[");
@@ -104,7 +104,7 @@ void lexer_test2()
 
 	lexer.convertToDFA();
 
-	lexer.readText("a.cpp");
+	lexer.readText("Scanner.cpp");
 
 	lexer.inputSample("/*comment*/", "COMMENT");
 	lexer.inputSample("// comment", "COMMENT");
@@ -116,10 +116,15 @@ void lexer_test2()
 	}
 	lexer.inputSample("1.2", "NUMBER");
 	lexer.inputSample("20", "NUMBER");
-	for (int i = 0; i < 63; i++)
-	{
-		lexer.inputSample(keywords[i], keywords[i]);
-	}
+
+	// The following will slow down the program very much
+	// we can figure out the keywords in the next phase not here.
+	// Process the tokens to get the keyword
+	//for (int i = 0; i < 63; i++)
+	//{
+	//	lexer.inputSample(keywords[i], keywords[i]);
+	//}
+	
 	lexer.inputSample(R"(\"string\")", "STRING");
 	lexer.inputSample(";", "DELIMITER");
 	lexer.inputSample(" ", "BLANK");
@@ -162,6 +167,10 @@ void lexer_test2()
 	lexer.inputSample(R"(\|\|)", "LOR");
 	lexer.inputSample("&&", "LAND");
 	lexer.inputSample(",", "DOT");
+
+
+	// DFA not minized 155ms
+	lexer.dfa.removeUnreachableStates();
 
 	auto result = lexer.scan();
 	for (int i = 0; i < result.size(); i++)
