@@ -40,6 +40,7 @@ cout << str << (x ? " accept" : " reject") << endl;
 #include <set>
 #include <algorithm>
 #include <iterator>
+#include <queue>
 using namespace std;
 
 struct translate {
@@ -113,5 +114,7 @@ private:
 	int lastAcceptState;
 	int currentState;
 
-	set<int> translateToOneState(char c, set<int> theStates);
+	bool seperate(set<int> input, char x, set<int> &A, set<int> &B);
+	//set<int> translateToOneState(char c, set<int> theStates);
+	int findOwner(vector<set<int>> P, int x);
 };

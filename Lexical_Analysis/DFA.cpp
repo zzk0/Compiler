@@ -172,66 +172,87 @@ void DFA::removeUnreachableStates()
 
 void DFA::mergeNondistinguishableStates()
 {
-	set<set<int>> P;
-	set<set<int>> W;
-	set<int> F(acceptStates.begin(), acceptStates.end());
-	set<int> Q;
+	set<int> finalStates;
+	set<int> otherStates;
+	set<int> allStates;
+	for (int i = 0; i < acceptStates.size(); i++)
+	{
+		finalStates.insert(acceptStates[i]);
+	}
 	for (int i = 0; i < states.size(); i++)
 	{
-		Q.insert(i);
+		allStates.insert(i);
 	}
-	set<int> Q_F;
-	set_difference(Q.begin(), Q.end(), P.begin(), P.end(), inserter(Q_F, Q_F.begin()));
-	
-	P.insert(F);
-	P.insert(Q_F);
-	W.insert(F);
+	set_difference(allStates.begin(), allStates.end(), finalStates.begin(), finalStates.end(), inserter(otherStates, otherStates.begin()));
 
-	while (!W.empty())
+	queue<set<int>> newAllStates;
+	newAllStates.push(otherStates);
+	newAllStates.push(finalStates);
+
+	vector<set<int>> newStates;
+
+	while (!newAllStates.empty())
 	{
-		set<int> A = *(W.begin());
-		W.erase(W.begin());
-		if (A.size() == 1) continue;
-
+		set<int> stateSet = newAllStates.front();
+		newAllStates.pop();
+		if (stateSet.size() == 1) {
+			newStates.push_back(stateSet);
+			continue;
+		}
+		set<int> A, B;
+		bool seperatable = false;
 		for (int i = 0; i < 128; i++)
 		{
-			set<int> X = translateToOneState(char(i), A);
-			for (set<int> Y : P)
+			if (seperate(stateSet, char(i), A, B))
 			{
-				set<int> YandX;
-				set<int> YminusX;
-				set_intersection(X.begin(), X.end(), Y.begin(), Y.end(), inserter(YandX, YandX.begin()));
-				set_difference(Y.begin(), Y.end(), X.begin(), X.end(), inserter(YminusX, YminusX.begin()));
-				if (YandX.empty() || YminusX.empty()) continue;
-				set<set<int>>::iterator it = P.find(Y);
-				P.erase(it);
-				P.insert(YandX);
-				P.insert(YminusX);
-
-				it = W.find(Y);
-				if (it != W.end())
-				{
-					W.erase(it);
-					W.insert(YandX);
-					W.insert(YminusX);
-				}
-				else
-				{
-					if (YandX.size() <= YminusX.size())
-					{
-						W.insert(YandX);
-					}
-					else
-					{
-						W.insert(YminusX);
-					}
-				}
+				newAllStates.push(A);
+				newAllStates.push(B);
+				seperatable = true;
+				break;
 			}
+		}
+		if (!seperatable) {
+			newStates.push_back(stateSet);
 		}
 	}
 
-	// Now set P to new state
+	DFA newDFA;
+	
+	for (int i = 0; i < newStates.size(); i++)
+	{
+		set<int> X = newStates[i];
+		set<int>::iterator it = X.find(startState);
+		if (it != X.end()) newDFA.setStartState(i);
+		newDFA.addState(translate());
+	}
+	
+	for (int i = 0; i < newStates.size(); i++)
+	{
+		for (int x : newStates[i])
+		{
+			for (int j = 0; j < 128; j++)
+			{
+				int nextState = states[x].table[j];
+				if (nextState == -1) continue;
+				//int newCurrentState = findOwner(newStates, x);
+				int newNextState = findOwner(newStates, nextState); 
+				bool isAcceptState = false;
+				for (int state_i = 0; state_i < acceptStates.size(); state_i++)
+				{
+					if (acceptStates[state_i] == x) {
+						isAcceptState = true;
+						break;
+					}
+				}
+				if (isAcceptState) newDFA.addAcceptState(i);
+				newDFA.states[i].table[j] = newNextState;
+			}
+		}
+	}
+	
+	*this = newDFA;
 }
+
 
 void DFA::minized()
 {
@@ -239,3 +260,58 @@ void DFA::minized()
 	mergeNondistinguishableStates();
 }
 
+
+bool DFA::seperate(set<int> input, char x, set<int>& A, set<int>& B)
+{
+	A.clear();
+	B.clear();
+	bool seperatable = false;;
+	for (auto state : input)
+	{
+		int nextState = states[state].table[x];
+		if (nextState == -1) continue;
+
+		set<int>::iterator it = input.find(nextState);
+		if (it == input.end())
+		{
+			B.insert(state);
+			seperatable = true;
+		}
+	}
+
+	set_difference(input.begin(), input.end(), B.begin(), B.end(), inserter(A, A.begin()));
+	if (A.size() == 0)  seperatable = false;
+	return seperatable;
+}
+
+
+//set<int> DFA::translateToOneState(char c, set<int> theStates)
+//{
+//	set<int> reachableStates;
+//	set<int> result;
+//	for (auto x : theStates)
+//	{
+//		int nextStates = states[x].table[c];
+//		if (nextStates != -1) {
+//			reachableStates.insert(nextStates);
+//			result.insert(x);
+//		}
+//	}
+//
+//	if (reachableStates.size() == 0) return set<int>();
+//	set<int>::iterator it = theStates.find(*reachableStates.begin());
+//	if (reachableStates.size() == 1 && it != theStates.end())
+//	{
+//		return result;
+//	}
+//	return set<int>();
+//}
+
+
+int DFA::findOwner(vector<set<int>> P, int x)
+{
+	for (int i = 0; i < P.size(); i++)
+	{
+		if (P[i].find(x) != P[i].end()) return i;
+	}
+}
