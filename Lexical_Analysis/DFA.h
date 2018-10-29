@@ -112,4 +112,6 @@ public:
 private:
 	int lastAcceptState;
 	int currentState;
+
+	set<int> translateToOneState(char c, set<int> theStates);
 };

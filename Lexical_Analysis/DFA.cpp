@@ -172,6 +172,65 @@ void DFA::removeUnreachableStates()
 
 void DFA::mergeNondistinguishableStates()
 {
+	set<set<int>> P;
+	set<set<int>> W;
+	set<int> F(acceptStates.begin(), acceptStates.end());
+	set<int> Q;
+	for (int i = 0; i < states.size(); i++)
+	{
+		Q.insert(i);
+	}
+	set<int> Q_F;
+	set_difference(Q.begin(), Q.end(), P.begin(), P.end(), inserter(Q_F, Q_F.begin()));
+	
+	P.insert(F);
+	P.insert(Q_F);
+	W.insert(F);
+
+	while (!W.empty())
+	{
+		set<int> A = *(W.begin());
+		W.erase(W.begin());
+		if (A.size() == 1) continue;
+
+		for (int i = 0; i < 128; i++)
+		{
+			set<int> X = translateToOneState(char(i), A);
+			for (set<int> Y : P)
+			{
+				set<int> YandX;
+				set<int> YminusX;
+				set_intersection(X.begin(), X.end(), Y.begin(), Y.end(), inserter(YandX, YandX.begin()));
+				set_difference(Y.begin(), Y.end(), X.begin(), X.end(), inserter(YminusX, YminusX.begin()));
+				if (YandX.empty() || YminusX.empty()) continue;
+				set<set<int>>::iterator it = P.find(Y);
+				P.erase(it);
+				P.insert(YandX);
+				P.insert(YminusX);
+
+				it = W.find(Y);
+				if (it != W.end())
+				{
+					W.erase(it);
+					W.insert(YandX);
+					W.insert(YminusX);
+				}
+				else
+				{
+					if (YandX.size() <= YminusX.size())
+					{
+						W.insert(YandX);
+					}
+					else
+					{
+						W.insert(YminusX);
+					}
+				}
+			}
+		}
+	}
+
+	// Now set P to new state
 }
 
 void DFA::minized()
@@ -179,3 +238,4 @@ void DFA::minized()
 	removeUnreachableStates();
 	mergeNondistinguishableStates();
 }
+

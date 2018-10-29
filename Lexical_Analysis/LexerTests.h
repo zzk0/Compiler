@@ -169,7 +169,8 @@ void lexer_test2()
 	lexer.inputSample(",", "DOT");
 
 
-	// DFA not minized 155ms
+	// DFA not minized 155ms, vector implement
+	// about 180ms, map implement
 	lexer.dfa.removeUnreachableStates();
 
 	auto result = lexer.scan();
