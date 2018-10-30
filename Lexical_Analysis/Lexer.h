@@ -26,6 +26,7 @@ public:
 
 	vector<string> patterns;
 	vector<NFA> NFAs;
+	NFA mixNFA;;
 	DFA dfa;
 	string text;
 

@@ -41,6 +41,7 @@ cout << str << (x ? " accept" : " reject") << endl;
 #include <algorithm>
 #include <iterator>
 #include <queue>
+#include <fstream>
 using namespace std;
 
 struct translate {
@@ -109,6 +110,8 @@ public:
 	void mergeNondistinguishableStates();
 
 	void minized();
+
+	void generate_DOT(const char *name);
 
 private:
 	int lastAcceptState;

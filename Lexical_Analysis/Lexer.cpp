@@ -41,6 +41,7 @@ void Lexer::convertToDFA()
 	for (int i = 1; i < NFAs.size(); i++) {
 		nfa = nfa_union(nfa, NFAs[i]);
 	}
+	mixNFA = nfa;
 	dfa = nfa.convertToDFA();
 }
 

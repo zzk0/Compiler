@@ -163,9 +163,11 @@ void DFA::removeUnreachableStates()
 	set<int> unreachableStates;
 	set_difference(allStates.begin(), allStates.end(), reachableStates.begin(), reachableStates.end(), inserter(unreachableStates, unreachableStates.begin()));
 
+	if (unreachableStates.size() == 0) return;
 	for (auto x : unreachableStates)
 	{
 		states.erase(x);
+		index--;
 	}
 }
 
@@ -266,8 +268,67 @@ void DFA::mergeNondistinguishableStates()
 
 void DFA::minized()
 {
-	removeUnreachableStates();
 	mergeNondistinguishableStates();
+	removeUnreachableStates();
+}
+
+
+void DFA::generate_DOT(const char *name)
+{
+	ofstream outFile(name);
+	string shapeCircle = "[shape=circle]";
+	string shapeDoubleCircle = "[shape=doublecircle]";
+
+	outFile << "digraph graphname {\n";
+	outFile << "\trankdir=LR;\n";
+
+	// define shape
+	outFile << "\t\"\" [shape=none]\n";
+	set<int> finalStates;
+	set<int> otherStates;
+	set<int> allStates;
+	for (int i = 0; i < acceptStates.size(); i++)
+	{
+		finalStates.insert(acceptStates[i]);
+	}
+	for (int i = 0; i < states.size(); i++)
+	{
+		map<int, translate>::iterator it = states.find(i);
+		if(it != states.end())
+			allStates.insert(i);
+	}
+	set_difference(allStates.begin(), allStates.end(), finalStates.begin(), finalStates.end(), inserter(otherStates, otherStates.begin()));
+	for (auto x : finalStates)
+	{
+		outFile << "\t" << x << " " << shapeDoubleCircle << endl;
+	}
+	for (auto x : otherStates)
+	{
+		outFile << "\t" << x << " " << shapeCircle << endl;
+	}
+
+	// define translate
+	// sample a->b[label = "0"]
+	string labelStart = "[label =\"";
+	string labelEnd = "\"]";
+	string arrow = "->";
+
+	outFile << "\t" << "\"\"" << arrow << startState << endl;
+
+	for (auto x : states)
+	{
+		for (int i = 0; i < 128; i++)
+		{
+			int nextState = x.second.table[i];
+			if (nextState != -1)
+			{
+				outFile << "\t" << x.first << arrow << nextState << " " << labelStart << char(i) << labelEnd << endl;
+			}
+		}
+	}
+
+
+	outFile << "}";
 }
 
 

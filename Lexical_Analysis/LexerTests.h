@@ -37,10 +37,20 @@ string keywords[] = { "asm", "else", "new", "this", "auto", "enum", "operator",
 void lexer_test2()
 {
 	Lexer lexer;
-	lexer.addPattern("a(b|c)*dcd");
+	//lexer.addPattern("a(b|c)*dcd");
+	lexer.addPattern("a(b|c)*c(c|d)*");
 	lexer.convertToDFA();
-	//lexer.dfa.removeUnreachableStates();
+
+	lexer.mixNFA.generate_DOT("nfa.dt");
+
+	lexer.dfa.removeUnreachableStates();
+
+	lexer.dfa.generate_DOT("dfa.dt");
+
 	lexer.dfa.mergeNondistinguishableStates();
+	lexer.dfa.removeUnreachableStates();
+		
+	lexer.dfa.generate_DOT("miniDfa.dt");
 
 	bool xy = lexer.dfa.IsAccepted("abdcd", 5);
 	xy = lexer.dfa.IsAccepted("abcbbbxcdcd", 11);

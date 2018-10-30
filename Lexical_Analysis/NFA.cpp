@@ -342,7 +342,60 @@ NFA nfa_star(NFA a)
 }
 
 
-void NFA::printTable()
+void NFA::generate_DOT(const char *name)
 {
+	ofstream outFile(name);
+	string shapeCircle = "[shape=circle]";
+	string shapeDoubleCircle = "[shape=doublecircle]";
 
+	outFile << "digraph graphname {\n";
+	outFile << "\trankdir=LR;\n";
+
+	// define shape
+	outFile << "\t\"\" [shape=none]\n";
+	set<int> finalStates;
+	set<int> allStates;
+	set<int> otherStates;
+
+	for (int i = 0; i < acceptStates.size(); i++)
+	{
+		finalStates.insert(acceptStates[i]);
+	}
+	for (int i = 0; i < stateCount; i++)
+	{
+		allStates.insert(i);
+	}
+	set_difference(allStates.begin(), allStates.end(), finalStates.begin(), finalStates.end(), inserter(otherStates, otherStates.begin()));
+	for (auto x : finalStates)
+	{
+		outFile << "\t" << x << " " << shapeDoubleCircle << endl;
+	}
+	for (auto x : otherStates)
+	{
+		outFile << "\t" << x << " " << shapeCircle << endl;
+	}
+
+	// define translate
+	// sample a->b[label = "0"]
+	string labelStart = "[label =\"";
+	string labelEnd = "\"]";
+	string arrow = "->";
+	string epsilon = "epsilon";
+
+	outFile << "\t" << "\"\"" << arrow << startState << endl;
+
+	for (int i = 0; i <stateCount; i++)
+	{
+		for (int j = 0; j < G[i].size(); j++)
+		{
+			if (G[i][j].second != '\0') {
+				outFile << "\t" << i << arrow << G[i][j].first << " " << labelStart << G[i][j].second << labelEnd << endl;
+			}
+			else {
+				outFile << "\t" << i << arrow << G[i][j].first << " " << labelStart << epsilon << labelEnd << endl;
+			}
+		}
+	}
+
+	outFile << "}";
 }

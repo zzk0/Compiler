@@ -40,7 +40,7 @@ public:
 
 	DFA convertToDFA();
 
-	void printTable();
+	void generate_DOT(const char *name);
 
 private:
 	bool hasSameVector(vector<int> &a, vector<int> &b);
