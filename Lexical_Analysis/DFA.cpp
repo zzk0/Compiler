@@ -225,17 +225,14 @@ void DFA::mergeNondistinguishableStates()
 		if (it != X.end()) newDFA.setStartState(i);
 		newDFA.addState(translate());
 	}
-	
+
+	set<int> newAcceptStates;
 	for (int i = 0; i < newStates.size(); i++)
 	{
 		for (int x : newStates[i])
 		{
 			for (int j = 0; j < 128; j++)
 			{
-				int nextState = states[x].table[j];
-				if (nextState == -1) continue;
-				//int newCurrentState = findOwner(newStates, x);
-				int newNextState = findOwner(newStates, nextState); 
 				bool isAcceptState = false;
 				for (int state_i = 0; state_i < acceptStates.size(); state_i++)
 				{
@@ -244,10 +241,23 @@ void DFA::mergeNondistinguishableStates()
 						break;
 					}
 				}
-				if (isAcceptState) newDFA.addAcceptState(i);
-				newDFA.states[i].table[j] = newNextState;
+				int newCurrentState = findOwner(newStates, x);
+				
+				if (isAcceptState) {
+					//newDFA.addAcceptState(newCurrentState);
+					newAcceptStates.insert(newCurrentState);
+				}
+
+				int nextState = states[x].table[j];
+				if (nextState == -1) continue;
+				int newNextState = findOwner(newStates, nextState); 
+				newDFA.states[newCurrentState].table[j] = newNextState;				
 			}
 		}
+	}
+	for (auto x : newAcceptStates)
+	{
+		newDFA.addAcceptState(x);
 	}
 	
 	*this = newDFA;

@@ -42,6 +42,12 @@ void lexer_test2()
 	//lexer.dfa.removeUnreachableStates();
 	lexer.dfa.mergeNondistinguishableStates();
 
+	bool xy = lexer.dfa.IsAccepted("abdcd", 5);
+	xy = lexer.dfa.IsAccepted("abcbbbxcdcd", 11);
+	xy = lexer.dfa.IsAccepted("adcdx", 5);
+	xy = lexer.dfa.IsAccepted("abbbbdcd", 8);
+	xy = lexer.dfa.IsAccepted("abcccdcd", 8);
+	xy = true;
 	//lexer.addPattern("/");
 
 	//// comment
