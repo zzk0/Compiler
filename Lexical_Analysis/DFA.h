@@ -113,6 +113,10 @@ public:
 
 	void generate_DOT(const char *name);
 
+	DFA create_newDFA(const vector<set<int>> &newStates);
+
+	set<int> translate_to_a_set(const set<int>& A, char c);
+
 private:
 	int lastAcceptState;
 	int currentState;

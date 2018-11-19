@@ -38,7 +38,7 @@ void lexer_test2()
 {
 	Lexer lexer;
 	//lexer.addPattern("a(b|c)*dcd");
-	lexer.addPattern("a(b|c)*c(c|d)*");
+	lexer.addPattern("cd(a|b)*d*");
 	lexer.convertToDFA();
 
 	lexer.mixNFA.generate_DOT("nfa.dt");
@@ -52,12 +52,17 @@ void lexer_test2()
 		
 	lexer.dfa.generate_DOT("miniDfa.dt");
 
-	bool xy = lexer.dfa.IsAccepted("abdcd", 5);
-	xy = lexer.dfa.IsAccepted("abcbbbxcdcd", 11);
-	xy = lexer.dfa.IsAccepted("adcdx", 5);
-	xy = lexer.dfa.IsAccepted("abbbbdcd", 8);
-	xy = lexer.dfa.IsAccepted("abcccdcd", 8);
-	xy = true;
+	const char * dotTool = "C:\\Users\\zzk\\Downloads\\graphviz-2.38\\release\\bin\\dot.exe ";
+	string argument = "-Tjpg -O ";
+
+	string nfaDot = "nfa.dt";
+	string dfaDot = "dfa.dt";
+	string miniDfaDot = "miniDfa.dt";
+
+
+	system((dotTool + argument + nfaDot).c_str());
+	system((dotTool + argument + dfaDot).c_str());
+	system((dotTool + argument + miniDfaDot).c_str());
 	//lexer.addPattern("/");
 
 	//// comment
@@ -200,5 +205,77 @@ void lexer_test2()
 	//	if (result[i].second == "COMMENT" || result[i].second == "BLANK") continue;
 	//	cout << result[i].first << "\t\t" << result[i].second << endl;
 	//}
+
+}
+
+
+void lexer_test3()
+{
+	Lexer lexer;
+
+	
+	// Comment
+	lexer.addPattern(R"({(a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z|_|0|1|2|3|4|5|6|7|8|9|A|B|C|D|E|F|G|H|I|J|K|L|M|N|O|P|Q|R|S|T|U|V|W|X|Y|Z|,| |\n)*})");
+	// identifier
+	lexer.addPattern("(a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z|_)(a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z|_|0|1|2|3|4|5|6|7|8|9|A|B|C|D|E|F|G|H|I|J|K|L|M|N|O|P|Q|R|S|T|U|V|W|X|Y|Z)*");
+	// number
+	lexer.addPattern("(0|1|2|3|4|5|6|7|8|9)*.*(0|1|2|3|4|5|6|7|8|9)*");
+	// Delimiter
+	lexer.addPattern(";");
+	// operators
+	lexer.addPattern(R"(\+)");
+	lexer.addPattern("-");
+	lexer.addPattern(R"(\*)");
+	lexer.addPattern("/");	
+	lexer.addPattern("<");
+	lexer.addPattern(">");
+	lexer.addPattern(":=");
+	// Blank
+	lexer.addPattern(" ");
+	lexer.addPattern("\n");
+	lexer.addPattern("\t");
+	// parentheses
+	lexer.addPattern(R"(\()");
+	lexer.addPattern(R"(\))");
+
+
+	lexer.dfa.removeUnreachableStates();
+	lexer.convertToDFA();
+	
+	lexer.inputSample("{ comment }", "COMMENT");
+	lexer.inputSample("abc1", "IDENTIFIER");
+	for (char x = 'a'; x <= 'z'; x++) {
+		string str(1, x);
+		lexer.inputSample(str, "IDENTIFIER");
+	}
+	lexer.inputSample("1.2", "NUMBER");
+	lexer.inputSample("20", "NUMBER");
+
+	lexer.inputSample(";", "DELIMITER");
+
+	lexer.inputSample("\n", "BLANK");
+	lexer.inputSample("\t", "BLANK");
+	lexer.inputSample(" ", "BLANK");
+	
+	//// operators
+	lexer.inputSample("+", "PLUS");
+	lexer.inputSample("-", "MINUS");
+	lexer.inputSample("*", "MULTI");
+	lexer.inputSample("/", "DIVIDE");
+	lexer.inputSample("<", "SMALLER");
+	lexer.inputSample(">", "GREATTER");
+	lexer.inputSample(":=", "ASSIGN");
+
+	lexer.inputSample(R"(\()", "sLPARE");
+	lexer.inputSample(R"(\))", "sRPARE");
+
+
+	lexer.readText("a.txt");
+	auto result = lexer.scan();
+	for (int i = 0; i < result.size(); i++)
+	{
+		if (result[i].second == "COMMENT" || result[i].second == "BLANK") continue;
+		cout << result[i].first << "\t\t" << result[i].second << endl;
+	}
 
 }

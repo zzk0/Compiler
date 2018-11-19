@@ -187,39 +187,84 @@ void DFA::mergeNondistinguishableStates()
 	}
 	set_difference(allStates.begin(), allStates.end(), finalStates.begin(), finalStates.end(), inserter(otherStates, otherStates.begin()));
 
-	queue<set<int>> newAllStates;
-	newAllStates.push(otherStates);
-	newAllStates.push(finalStates);
+	set<set<int>> P;
+	P.insert(finalStates);
+	P.insert(otherStates);
+	set<set<int>> W;
+	W.insert(finalStates);
 
-	vector<set<int>> newStates;
-
-	while (!newAllStates.empty())
+	while (!W.empty())
 	{
-		set<int> stateSet = newAllStates.front();
-		newAllStates.pop();
-		if (stateSet.size() == 1) {
-			newStates.push_back(stateSet);
-			continue;
-		}
-		set<int> A, B;
-		bool seperatable = false;
+		set<set<int>>::iterator it = W.begin();
+		set<int> A = *it;
+		W.erase(*it);
+
+		//if (A.size() == 1) continue;
+
 		for (int i = 0; i < 128; i++)
 		{
-			if (seperate(stateSet, char(i), A, B))
+			set<int> X = translate_to_a_set(A, char(i));
+			if (X.size() == 0) continue;
+
+			set<int> prev_set;
+			bool first = true;
+			for (set<int> Y : P)
 			{
-				newAllStates.push(A);
-				newAllStates.push(B);
-				seperatable = true;
-				break;
+				if (!first)
+				{
+					set<set<int>>::iterator it = P.find(prev_set);
+					if (it != P.end()) {
+						P.erase(it);
+					}
+				}
+				set<int> intersection, difference;
+				set_intersection(X.begin(), X.end(), Y.begin(), Y.end(), inserter(intersection, intersection.begin()));
+				set_difference(Y.begin(), Y.end(), X.begin(), X.end(), inserter(difference, difference.begin()));
+
+				if (intersection.size() == 0 || difference.size() == 0) continue;
+
+				prev_set = Y;
+				if (first) {
+					first = false;
+				}
+				P.insert(intersection);
+				P.insert(difference);
+
+				set<set<int>>::iterator wit = W.find(Y);
+				if (wit != W.end())
+				{
+					W.insert(intersection);
+					W.insert(difference);
+				}
+				else
+				{
+					if (difference.size() < intersection.size())
+					{
+						W.insert(difference);
+					}
+					else
+					{
+						W.insert(intersection);
+					}
+				}
 			}
-		}
-		if (!seperatable) {
-			newStates.push_back(stateSet);
 		}
 	}
 
+	vector<set<int>> newStates;
+	for (set<int> x : P)
+	{
+		newStates.push_back(x);
+	}
+
+	*this = create_newDFA(newStates);
+}
+
+
+DFA DFA::create_newDFA(const vector<set<int>>& newStates)
+{
 	DFA newDFA;
-	
+
 	for (int i = 0; i < newStates.size(); i++)
 	{
 		set<int> X = newStates[i];
@@ -244,7 +289,7 @@ void DFA::mergeNondistinguishableStates()
 					}
 				}
 				int newCurrentState = findOwner(newStates, x);
-				
+
 				if (isAcceptState) {
 					//newDFA.addAcceptState(newCurrentState);
 					newAcceptStates.insert(newCurrentState);
@@ -252,8 +297,8 @@ void DFA::mergeNondistinguishableStates()
 
 				int nextState = states[x].table[j];
 				if (nextState == -1) continue;
-				int newNextState = findOwner(newStates, nextState); 
-				newDFA.states[newCurrentState].table[j] = newNextState;				
+				int newNextState = findOwner(newStates, nextState);
+				newDFA.states[newCurrentState].table[j] = newNextState;
 			}
 		}
 	}
@@ -261,8 +306,22 @@ void DFA::mergeNondistinguishableStates()
 	{
 		newDFA.addAcceptState(x);
 	}
-	
-	*this = newDFA;
+
+	return newDFA;
+}
+
+set<int> DFA::translate_to_a_set(const set<int>& A, char c)
+{
+	set<int> result;
+	for (int i = 0; i < states.size(); i++)
+	{
+		int nextState = states[i].table[int(c)];
+		if (A.find(nextState) != A.end())
+		{
+			result.insert(i);
+		}
+	}
+	return result;
 }
 
 
@@ -330,6 +389,7 @@ void DFA::generate_DOT(const char *name)
 
 	outFile << "}";
 }
+
 
 
 bool DFA::seperate(set<int> input, char x, set<int>& A, set<int>& B)

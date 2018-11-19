@@ -13,27 +13,28 @@ using namespace std;
 
 int main()
 {
-	dfa_test_2();
+	//dfa_test_1();
+	//dfa_test_2();
 
-	nfa_test_1();
-	nfa_test_2();
-	nfa_test_3();
-	nfa_test_4();
-	nfa_test_5();
-	nfa_test_6();
+	//nfa_test_1();
+	//nfa_test_2();
+	//nfa_test_3();
+	//nfa_test_4();
+	//nfa_test_5();
+	//nfa_test_6();
 
-	re_test1();
-	re_test2();
-	re_test3();
-	re_test4();
-	re_test5();
-	re_test6();
-	re_test7();
-	re_test8();
+	//re_test1();
+	//re_test2();
+	//re_test3();
+	//re_test4();
+	//re_test5();
+	//re_test6();
+	//re_test7();
+	//re_test8();
 
 
 	// lexer_test1();
-	lexer_test2();
+	lexer_test3();
 
 	//system("pause");
 }

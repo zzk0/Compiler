@@ -16,6 +16,7 @@ void dfa_test_1()
 	nfa.addEdge(3, 1, 'a');
 
 	DFA dfa = nfa.convertToDFA();
+
 	string x = "aaaaaaaaaaaaa";
 	if (!dfa.IsAccepted(x, x.length())) cout << "Failed 1" << endl;
 	x = "";
