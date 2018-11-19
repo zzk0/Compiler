@@ -1,0 +1,48 @@
+﻿program -> stmt-sequence
+
+# 左递归 
+# stmt-sequence -> stmt-sequence statememt | statememt
+# 改成右递归，在这里去掉了分号，因为不是所有的语句都需要分号结尾
+stmt-sequence -> statememt stmt-sequence | epsilon 
+statememt -> if-stmt | assign-stmt ; | read-stmt ; | write-stmt ; | while-stmt | dowhile-stmt ; | for-stmt
+
+# 左公共因子
+# if-stmt -> if (exp) stmt-sequence else stmt-sequence | if (exp) stmt-sequence
+# 添加一个else-part来消除
+
+if-stmt -> if ( exp ) stmt-sequence else-part
+else-part -> else stmt-sequence | epsilon
+assign-stmt -> identifier := exp
+read-stmt -> read identifier
+write-stmt -> write identifier
+# 这里存在一个bug， stmt-sequence可以包含有while语句，程序无法分辨
+# 处理方法：预读一个Token，如果Token的是前小括号，那么这个是dowhile语句，而不是一个stmt-sequence
+while-stmt -> while exp do stmt-sequence endwhile
+dowhile-stmt -> do stmt-sequence while ( exp) ;
+
+
+# for-stmt -> for identifier := simple-exp to simple-exp do stmt-sequence enddo
+# for-stmt -> for identifier := simple-exp downto simple-exp do stmt-sequence enddo
+for-stmt -> for identifier := simple-exp to-part
+to-part -> to simple-exp do stmt-sequence enddo | downto simple-exp do stmt-sequence enddo
+
+# 左公共因子
+# exp -> simple-exp comparison-op simple-exp | simple-exp
+# 处理方法和if-stmt相同
+exp -> simple-exp comparison-part
+comparison-part -> comparison-op simple-exp | epsilon
+comparison-op -> < | =
+
+# 左递归
+# simple-exp -> simple-exp addop term | term
+simple-exp -> term add-part # addop simple-exp | term
+add-part -> addop simple-exp | epsilon
+addop -> + | -
+
+# 左递归
+# term -> term mulop factor | factor
+term -> factor mul-part # mulop term | factor
+mul-part -> mulop term | epsilon
+mulop -> * | /
+factor -> (exp) | number | identifier
+ 

@@ -243,31 +243,31 @@ void lexer_test3()
 	lexer.convertToDFA();
 	
 	lexer.inputSample("{ comment }", "COMMENT");
-	lexer.inputSample("abc1", "IDENTIFIER");
+	lexer.inputSample("abc1", "identifier");
 	for (char x = 'a'; x <= 'z'; x++) {
 		string str(1, x);
-		lexer.inputSample(str, "IDENTIFIER");
+		lexer.inputSample(str, "identifier");
 	}
-	lexer.inputSample("1.2", "NUMBER");
-	lexer.inputSample("20", "NUMBER");
+	lexer.inputSample("1.2", "number");
+	lexer.inputSample("20", "number");
 
-	lexer.inputSample(";", "DELIMITER");
+	lexer.inputSample(";", ";");
 
 	lexer.inputSample("\n", "BLANK");
 	lexer.inputSample("\t", "BLANK");
 	lexer.inputSample(" ", "BLANK");
 	
 	//// operators
-	lexer.inputSample("+", "PLUS");
-	lexer.inputSample("-", "MINUS");
-	lexer.inputSample("*", "MULTI");
-	lexer.inputSample("/", "DIVIDE");
-	lexer.inputSample("<", "SMALLER");
-	lexer.inputSample(">", "GREATTER");
-	lexer.inputSample(":=", "ASSIGN");
+	lexer.inputSample("+", "+");
+	lexer.inputSample("-", "-");
+	lexer.inputSample("*", "*");
+	lexer.inputSample("/", "/");
+	lexer.inputSample("<", "<");
+	lexer.inputSample(">", ">");
+	lexer.inputSample(":=", ":=");
 
-	lexer.inputSample(R"(\()", "sLPARE");
-	lexer.inputSample(R"(\))", "sRPARE");
+	lexer.inputSample(R"(\()", "(");
+	lexer.inputSample(R"(\))", ")");
 
 
 	lexer.readText("a.txt");
