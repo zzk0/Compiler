@@ -1,14 +1,30 @@
 #include <iostream>
 #include <fstream>
+#include <string>
 #include <vector>
+#include <queue>
 using namespace std;
 
 namespace tiny
 {
 	struct ParsingTreeNode {
 		string data;
+		static int index;
+		int count;
 		vector<ParsingTreeNode*> children;
+
+		ParsingTreeNode() {
+			this->data = "";
+			this->count = this->index++;
+		}
+
+		ParsingTreeNode(string x) {
+			this->data = x;
+			this->count = this->index++;
+		}
 	};
+
+	int ParsingTreeNode::index = 0;
 
 	bool accept = false;
 
@@ -91,278 +107,398 @@ namespace tiny
 		else error();
 	}
 
-	void exp();
-	void term();
-	void simple_exp();
-	void stmt_sequence();
+	ParsingTreeNode* exp();
+	ParsingTreeNode* term();
+	ParsingTreeNode* simple_exp();
+	ParsingTreeNode* stmt_sequence();
 
-	void factor()
+	ParsingTreeNode* factor()
 	{
+		ParsingTreeNode *node = new ParsingTreeNode("factor"); 
 		if (tok.second == "(") {
+			node->children.push_back(new ParsingTreeNode(tok.first));
 			eat("(");
-			exp();
+			node->children.push_back(exp());
+			//exp();
+			node->children.push_back(new ParsingTreeNode(tok.first));
 			eat(")");
 		}
 		else if (tok.second == "number") {
+			node->children.push_back(new ParsingTreeNode(tok.first));
 			eat("number");
 		}
 		else if (tok.second == "identifier") {
+			node->children.push_back(new ParsingTreeNode(tok.first));
 			eat("identifier");
 		}
 		else {
 			error();
 		}
+		return node;
 	}
 
-	void mulop()
+	ParsingTreeNode* mulop()
 	{
+		ParsingTreeNode *node = new ParsingTreeNode("mulop"); 
 		if (tok.second == "*") {
+			node->children.push_back(new ParsingTreeNode(tok.first));
 			eat("*");
 		}
 		else if (tok.second == "/") {
+			node->children.push_back(new ParsingTreeNode(tok.first));
 			eat("/");
 		}
 		else {
 			error();
 		}
+		return node;
 	}
 	
-	void mul_part()
+	ParsingTreeNode* mul_part()
 	{
+		ParsingTreeNode *node = new ParsingTreeNode("mul_part"); 
 		if (tok.second == "*" || tok.second == "/") {
-			mulop();
-			term();
+			node->children.push_back(mulop());
+			node->children.push_back(term());
+			//mulop();
+			//term();
 		}
+		return node;
 	}
 
-	void term()
+	ParsingTreeNode* term()
 	{
+		ParsingTreeNode *node = new ParsingTreeNode("term"); 
 		if (tok.second == "(" || tok.second == "number" || tok.second == "identifier") {
-			factor();
-			mul_part();
+			node->children.push_back(factor());
+			node->children.push_back(mul_part());
 		}
 		else {
 			error();
 		}
+		return node;
 	}
 
-	void addop()
+	ParsingTreeNode* addop()
 	{
+		ParsingTreeNode *node = new ParsingTreeNode("addop"); 
 		if (tok.second == "+") {
+			node->children.push_back(new ParsingTreeNode(tok.first));
 			eat("+");
 		}
 		else if (tok.second == "-") {
+			node->children.push_back(new ParsingTreeNode(tok.first));
 			eat("-");
 		}
 		else {
 			error();
 		}
+		return node;
 	}
 
-	void add_part()
+	ParsingTreeNode* add_part()
 	{
+		ParsingTreeNode *node = new ParsingTreeNode("add_part"); 
 		if (tok.second == "+" || tok.second == "-") {
-			addop();
-			simple_exp();
+			node->children.push_back(addop());
+			node->children.push_back(simple_exp());
 		}
+		return node;
 	}
 
-	void simple_exp()
+	ParsingTreeNode* simple_exp()
 	{
+		ParsingTreeNode *node = new ParsingTreeNode("simple_exp"); 
 		if (tok.second == "(" || tok.second == "number" || tok.second == "identifier") {
-			term();
-			add_part();
+			node->children.push_back(term());
+			node->children.push_back(add_part());
 		}
 		else {
 			error();
 		}
+		return node;
 	}
 
-	void comparison_op()
+	ParsingTreeNode* comparison_op()
 	{
+		ParsingTreeNode *node = new ParsingTreeNode("comparison_op"); 
 		if (tok.second == "<") {
+			node->children.push_back(new ParsingTreeNode(tok.first));
 			eat("<");
 		}
 		else if (tok.second == ">") {
+			node->children.push_back(new ParsingTreeNode(tok.first));
 			eat(">");
 		}
 		else if (tok.second == "=") {
+			node->children.push_back(new ParsingTreeNode(tok.first));
 			eat("=");
 		}
 		else {
 			error();
 		}
+		return node;
 	}
 
-	void comparison_part()
+	ParsingTreeNode* comparison_part()
 	{
+		ParsingTreeNode *node = new ParsingTreeNode("comparison_part"); 
 		if (tok.second == ">" || tok.second == "=") {
-			comparison_op();
-			simple_exp();
+			node->children.push_back(comparison_op());
+			node->children.push_back(simple_exp());
 		}
+		return node;
 	}
 
-	void exp()
+	ParsingTreeNode* exp()
 	{
+		ParsingTreeNode *node = new ParsingTreeNode("exp"); 
 		if (tok.second == "(" || tok.second == "number" || tok.second == "identifier") {
-			simple_exp();
-			comparison_part();
+			node->children.push_back(simple_exp());
+			node->children.push_back(comparison_part());
 		}
 		else {
 			error();
 		}
+		return node;
 	}
 
-	void else_part()
+	ParsingTreeNode* else_part()
 	{
+		ParsingTreeNode *node = new ParsingTreeNode("else_part"); 
 		if (tok.second == "else") {
+			node->children.push_back(new ParsingTreeNode(tok.first));
 			eat("else");
-			stmt_sequence();
+			node->children.push_back(stmt_sequence());
 		}
+		return node;
 	}
 
-	void if_stmt()
+	ParsingTreeNode* if_stmt()
 	{
+		ParsingTreeNode *node = new ParsingTreeNode("if_stmt"); 
+		node->children.push_back(new ParsingTreeNode(tok.first));
 		eat("if");
+		node->children.push_back(new ParsingTreeNode(tok.first));
 		eat("(");
-		exp();
+		node->children.push_back(exp());
+		node->children.push_back(new ParsingTreeNode(tok.first));
 		eat(")");
-		stmt_sequence();
-		else_part();
+		node->children.push_back(stmt_sequence());
+		node->children.push_back(else_part());
+
+		return node;
 	}
 
-	void assign_stmt()
+	ParsingTreeNode* assign_stmt()
 	{
+		ParsingTreeNode *node = new ParsingTreeNode("assign_stmt"); 
 		if (tok.second == "identifier") {
+			node->children.push_back(new ParsingTreeNode(tok.first));
 			eat("identifier");
+			node->children.push_back(new ParsingTreeNode(tok.first));
 			eat(":=");
-			exp();
+			node->children.push_back(exp());
+			node->children.push_back(new ParsingTreeNode(tok.first));
 			eat(";");
 		}
 		else {
 			error();
 		}
+		return node;
 	}
 
-	void read_stmt()
+	ParsingTreeNode* read_stmt()
 	{
+		ParsingTreeNode *node = new ParsingTreeNode("read_stmt"); 
+		node->children.push_back(new ParsingTreeNode(tok.first));
 		eat("read");
+		node->children.push_back(new ParsingTreeNode(tok.first));
 		eat("identifier");
+		node->children.push_back(new ParsingTreeNode(tok.first));
 		eat(";");
+		return node;
 	}
 
-	void write_stmt()
+	ParsingTreeNode* write_stmt()
 	{
+		ParsingTreeNode *node = new ParsingTreeNode("write_stmt"); 
+		node->children.push_back(new ParsingTreeNode(tok.first));
 		eat("write");
+		node->children.push_back(new ParsingTreeNode(tok.first));
 		eat("identifier");
+		node->children.push_back(new ParsingTreeNode(tok.first));
 		eat(";");
+		return node;
 	}
 
-	void dowhile_stmt()
+	ParsingTreeNode* dowhile_stmt()
 	{
+		ParsingTreeNode *node = new ParsingTreeNode("dowhile_stmt"); 
+		node->children.push_back(new ParsingTreeNode(tok.first));
 		eat("do");
-		stmt_sequence();
+		node->children.push_back(stmt_sequence());
+		node->children.push_back(new ParsingTreeNode(tok.first));
 		eat("while");
+		node->children.push_back(new ParsingTreeNode(tok.first));
 		eat("(");
-		exp();
+		node->children.push_back(exp());
+		node->children.push_back(new ParsingTreeNode(tok.first));
 		eat(")");
+		node->children.push_back(new ParsingTreeNode(tok.first));
 		eat(";");
+
+		return node;
 	}
 
-	void to_stmt()
+	ParsingTreeNode* to_stmt()
 	{
+		ParsingTreeNode *node = new ParsingTreeNode("to_stmt"); 
 		if (tok.second == "to") {
+			node->children.push_back(new ParsingTreeNode(tok.first));
 			eat("to");
 		}
 		else if (tok.second == "downto") {
+			node->children.push_back(new ParsingTreeNode(tok.first));
 			eat("downto");
 		}
 		else {
 			error();
 		}
-		simple_exp();
+		node->children.push_back(simple_exp());
+		node->children.push_back(new ParsingTreeNode(tok.first));
 		eat("do");
-		stmt_sequence();
+		node->children.push_back(stmt_sequence());
+		node->children.push_back(new ParsingTreeNode(tok.first));
 		eat("enddo");
+		
+		return node;
 	}
 
-	void for_stmt()
+	ParsingTreeNode* for_stmt()
 	{
+		ParsingTreeNode *node = new ParsingTreeNode("for_stmt"); 
+		node->children.push_back(new ParsingTreeNode(tok.first));
 		eat("for");
+		node->children.push_back(new ParsingTreeNode(tok.first));
 		eat("identifier");
+		node->children.push_back(new ParsingTreeNode(tok.first));
 		eat(":=");
-		simple_exp();
-		to_stmt();
+		node->children.push_back(simple_exp());
+		node->children.push_back(to_stmt());
+		return node;
 	}
 	
-	void while_stmt()
+	ParsingTreeNode* while_stmt()
 	{
+		ParsingTreeNode *node = new ParsingTreeNode("while_stmt"); 
 		if (tok.second == "while") {
+			node->children.push_back(new ParsingTreeNode(tok.first));
 			eat("while");
-			exp();
+			node->children.push_back(exp());
+			node->children.push_back(new ParsingTreeNode(tok.first));
 			eat("do");
-			stmt_sequence();
+			node->children.push_back(stmt_sequence());
+			node->children.push_back(new ParsingTreeNode(tok.first));
 			eat("endwhile");
 		}
 		else {
 			error();
 		}
+		return node;
 	}
 
-	void statement()
+	ParsingTreeNode* statement()
 	{
+		ParsingTreeNode *node = new ParsingTreeNode("statement"); 
 		if (tok.second == "if")
 		{
-			if_stmt();
+			node->children.push_back(if_stmt());
 		}
 		else if (tok.second == "identifier")
 		{
-			assign_stmt();
+			node->children.push_back(assign_stmt());
 		}
 		else if (tok.second == "read")
 		{
-			read_stmt();
+			node->children.push_back(read_stmt());
 		}
 		else if (tok.second == "write")
 		{
-			write_stmt();
+			node->children.push_back(write_stmt());
 		}
 		else if (tok.second == "while")
 		{
-			while_stmt();
+			node->children.push_back(while_stmt());
 		}
 		else if (tok.second == "do")
 		{
-			dowhile_stmt();
+			node->children.push_back(dowhile_stmt());
 		}
 		else if (tok.second == "for")
 		{
-			for_stmt();
+			node->children.push_back(for_stmt());
 		}
 		else
 		{
 			error();
 		}
+		return node;
 	}
 
-	void stmt_sequence()
+	ParsingTreeNode* stmt_sequence()
 	{
+		ParsingTreeNode *node = new ParsingTreeNode("stmt_sequence"); 
 		if (tok.second == "if" || tok.second == "identifier" || tok.second == "write" ||
 			tok.second == "do" || tok.second == "for" || tok.second == "read" || tok.second == "while") {
 			
-			if (tok.second == "while" && preTok.second == "(" ) return;
+			if (tok.second == "while" && preTok.second == "(" ) return nullptr;
 			
-			statement();
-			stmt_sequence();
+			node->children.push_back(statement());
+			node->children.push_back(stmt_sequence());
 		}
+
+		return node;
 	}
 
-	void program()
+	ParsingTreeNode* program()
 	{
+		ParsingTreeNode *node = new ParsingTreeNode("program"); 
 		advance();
-		stmt_sequence();
+		node->children.push_back(stmt_sequence());
+		return node;
 	}
 
+
+	void generate_to_dot(ParsingTreeNode *tree)
+	{
+		ofstream outFile("ParsingTree.dot");
+
+		outFile << "digraph graphname {\n";
+		
+		ParsingTreeNode *node = tree;
+
+		queue<ParsingTreeNode*> NodeQueue;
+		NodeQueue.push(node);
+		
+		int index = 0;
+		while (!NodeQueue.empty())
+		{
+			ParsingTreeNode *cur = NodeQueue.front();
+			NodeQueue.pop();
+
+			for (int i = 0; i < cur->children.size(); i++)
+			{
+				if (cur->children[i] != nullptr) {
+					NodeQueue.push(cur->children[i]);
+					outFile << "\"" << cur->count << ": "<< cur->data << "\"" << " -> " << "\"" << cur->children[i]->count <<": " << cur->children[i]->data  << "\"" << endl;
+				}
+			}
+			index++;
+		}
+
+		outFile << "}";
+	}
 };
 
 int main()
@@ -370,10 +506,11 @@ int main()
 	tiny::allToken = tiny::getAllToken();
 	tiny::preTok = tiny::getToken();
 
-	tiny::program();
+	tiny::ParsingTreeNode *tree = tiny::program();
 
 	if (tiny::accept)
 	{
 		cout << "accept" << endl;
+		tiny::generate_to_dot(tree);
 	}
 }
