@@ -469,7 +469,6 @@ namespace tiny
 		return node;
 	}
 
-
 	void generate_to_dot(ParsingTreeNode *tree)
 	{
 		ofstream outFile("ParsingTree.dot");
